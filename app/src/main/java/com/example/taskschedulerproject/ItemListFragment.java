@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -54,7 +53,7 @@ public class ItemListFragment extends Fragment {
 
         RecyclerView rcListNames = view.findViewById(R.id.listsContainer);
 
-        ListsAdapter adapter = new ListsAdapter(listNamesArrayList);
+        ListsAdapter adapter = new ListsAdapter(listNamesArrayList, (MainActivity)getActivity());
 
         rcListNames.setAdapter(adapter);
         rcListNames.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -62,24 +61,37 @@ public class ItemListFragment extends Fragment {
 
     public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> {
         private ArrayList<String> listsNamesArrayList;
+        private OnListListener onListListener;
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView listNameTextView, creationDateTextView;
             public ImageView deleteImageButton;
 
-            public ViewHolder(View itemView) {
+            private OnListListener onListListener;
+
+            public ViewHolder(View itemView, OnListListener onListListener) {
                 super(itemView);
 
                 listNameTextView = itemView.findViewById(R.id.listNameTextView);
                 creationDateTextView = itemView.findViewById(R.id.creationDateTextView);
 
                 deleteImageButton = itemView.findViewById(R.id.deleteImageButton);
+
+                this.onListListener = onListListener;
+
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                onListListener.onListClick(getAdapterPosition());
             }
         }
 
 
-        public ListsAdapter(ArrayList<String> names) {
+        public ListsAdapter(ArrayList<String> names, OnListListener onListListener) {
             listsNamesArrayList = names;
+            this.onListListener = onListListener;
         }
 
         @NonNull
@@ -92,7 +104,7 @@ public class ItemListFragment extends Fragment {
             View cardListView = inflater.inflate(R.layout.card_view_layout, parent, false);
 
             // Return a new holder instance
-            ViewHolder viewHolder = new ViewHolder(cardListView);
+            ViewHolder viewHolder = new ViewHolder(cardListView, onListListener);
             return viewHolder;
         }
 
@@ -109,5 +121,9 @@ public class ItemListFragment extends Fragment {
         public int getItemCount() {
             return listsNamesArrayList.size();
         }
+    }
+
+    public interface OnListListener {
+        void onListClick(int position);
     }
 }

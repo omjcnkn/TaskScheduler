@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TaskSchedulerProject</string>
+    <string name="app_title">Task Scheduler App</string>
+</resources>

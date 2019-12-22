@@ -8,7 +8,7 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-public class EditTask extends AppCompatActivity {
+public class EditTaskActivity extends AppCompatActivity {
     ArrayList<String> priorities;
     ArrayAdapter<String> adapter;
     Spinner priority;

@@ -1,43 +1,33 @@
 package com.example.taskschedulerproject;
 
-
-import android.content.Context;
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ItemsFragment extends Fragment {
+public class ItemsActivity extends AppCompatActivity {
     private RecyclerView rvItems;
-    public ItemsFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_items, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_items);
 
-        rvItems = rootView.findViewById(R.id.itemsRecyclerView);
+        initUI();
+    }
+
+    private void initUI() {
+        rvItems = findViewById(R.id.itemsRecyclerView);
 
         ArrayList<String> items = new ArrayList<String>();
         items.add("Task1");
@@ -49,13 +39,10 @@ public class ItemsFragment extends Fragment {
         items.add("Task7");
         ItemsAdapter adapter = new ItemsAdapter(items);
         rvItems.setAdapter(adapter);
-        rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvItems.addItemDecoration(new DividerItemDecoration(getContext(),
+        rvItems.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        rvItems.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
                 DividerItemDecoration.VERTICAL));
-
-        return rootView;
     }
-
 
     /* Creating RecyclerView Adapter and ViewHolder */
     public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {

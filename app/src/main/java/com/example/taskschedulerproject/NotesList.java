@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class NotesList extends ItemList {
-    public NotesList() {
-        super();
+    public NotesList(String listTitle) {
+        super(listTitle);
     }
 
     public void addItem(String title,

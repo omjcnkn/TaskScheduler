@@ -2,7 +2,6 @@ package com.example.taskschedulerproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,44 +11,60 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+    private UserBoard userBoard;
+
+    private RecyclerView rvLists;
+    private FloatingActionButton addNewListFab;
+
+    private ListsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initLogic();
         initUI();
     }
 
+    private void initLogic() {
+        userBoard = new UserBoard("Mahmoud Ahmed Khalil");
+    }
+
     private void initUI() {
-        ArrayList<String> listNamesArrayList = new ArrayList<>();
+        addNewListFab = findViewById(R.id.addNewListFab);
+        rvLists = findViewById(R.id.listsContainer);
 
-        listNamesArrayList.add("List 1");
-        listNamesArrayList.add("List 2");
-        listNamesArrayList.add("List 3");
-        listNamesArrayList.add("List 4");
-        listNamesArrayList.add("List 5");
-        listNamesArrayList.add("List 6");
+        /* Setting up the RecyclerView */
+        ArrayList<ItemList> allCreatedLists = userBoard.getLists();
 
-        RecyclerView rcListNames = findViewById(R.id.listsContainer);
+        adapter = new ListsAdapter(allCreatedLists);
 
-        ListsAdapter adapter = new ListsAdapter(listNamesArrayList);
+        rvLists.setAdapter(adapter);
+        rvLists.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        rcListNames.setAdapter(adapter);
-        rcListNames.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        /* Setting up the Add Fab Listener */
+        addNewListFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userBoard.createNewNotesList("Notes List");
+                adapter.notifyItemInserted(userBoard.getLists().size() - 1);
+            }
+        });
     }
 
     public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> {
-        private ArrayList<String> listsNamesArrayList;
+        private ArrayList<ItemList> createdLists;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView listNameTextView, creationDateTextView;
@@ -74,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        public ListsAdapter(ArrayList<String> names) {
-            listsNamesArrayList = names;
+        public ListsAdapter(ArrayList<ItemList> createdLists) {
+            this.createdLists = createdLists;
         }
 
         @NonNull
@@ -94,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.listNameTextView.setText(listsNamesArrayList.get(position));
+            holder.listNameTextView.setText(createdLists.get(position).getListTitle());
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MM/dd 'at' HH:mm:ss");
             Date date = new Date(System.currentTimeMillis());
             holder.creationDateTextView.setText("Created in "+formatter.format(date));
@@ -103,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return listsNamesArrayList.size();
+            return createdLists.size();
         }
     }
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class CheckList extends ItemList {
-    public CheckList() {
-        super();
+    public CheckList(String listTitle) {
+        super(listTitle);
     }
 
     public void addItem(String title,

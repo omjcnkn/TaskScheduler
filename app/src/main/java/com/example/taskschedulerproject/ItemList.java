@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public abstract class ItemList {
+    private String listTitle;
     private ArrayList<Item> items;
     private String listDate;
 
-    public ItemList() {
+    public ItemList(String listTitle) {
+        this.listTitle = listTitle;
         items = new ArrayList<>();
         listDate = new Date().toString();
     }
@@ -55,5 +57,9 @@ public abstract class ItemList {
 
     public ArrayList<Item> getItems() {
         return items;
+    }
+
+    public String getListTitle() {
+        return listTitle;
     }
 }

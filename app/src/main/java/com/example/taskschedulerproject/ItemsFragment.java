@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 
@@ -24,7 +26,6 @@ import java.util.ArrayList;
  */
 public class ItemsFragment extends Fragment {
     private RecyclerView rvItems;
-
     public ItemsFragment() {
         // Required empty public constructor
     }
@@ -46,7 +47,6 @@ public class ItemsFragment extends Fragment {
         items.add("Task5");
         items.add("Task6");
         items.add("Task7");
-
         ItemsAdapter adapter = new ItemsAdapter(items);
         rvItems.setAdapter(adapter);
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));

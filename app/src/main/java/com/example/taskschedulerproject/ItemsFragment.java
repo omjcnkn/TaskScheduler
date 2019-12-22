@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -59,16 +61,31 @@ public class ItemsFragment extends Fragment {
     public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
         private ArrayList<String> itemsNamesArrayList;
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView itemNameTextView;
             public TextView itemDueDateTextView;
+            public ImageView priorityImageView;
+            public ImageView checkImageView;
+            public ImageView deleteImageView;
+
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 itemNameTextView = itemView.findViewById(R.id.itemNameTextView);
                 itemDueDateTextView = itemView.findViewById(R.id.itemDueDateTextView);
+                checkImageView = itemView.findViewById(R.id.checkImageView);
+                deleteImageView = itemView.findViewById(R.id.deleteImageView);
+
+                itemView.setOnClickListener(this);
             }
+
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(getContext(), "Item" + getAdapterPosition(), Toast.LENGTH_LONG).show();
+            }
+
+
         }
 
         public ItemsAdapter(ArrayList<String> items) {

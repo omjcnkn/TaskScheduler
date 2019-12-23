@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -27,7 +30,7 @@ public class ItemsActivity extends AppCompatActivity {
     private FloatingActionButton addNewListItemFab;
 
     private ItemsAdapter adapter;
-
+    ArrayList<Item> items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +48,7 @@ public class ItemsActivity extends AppCompatActivity {
         rvItems = findViewById(R.id.itemsRecyclerView);
         addNewListItemFab = findViewById(R.id.addNewTaskActionButton);
 
-        ArrayList<Item> items = userSelectedList.getItems();
+        items = userSelectedList.getItems();
 
         adapter = new ItemsAdapter(items);
         rvItems.setAdapter(adapter);
@@ -53,7 +56,6 @@ public class ItemsActivity extends AppCompatActivity {
         rvItems.addItemDecoration(new DividerItemDecoration(rvItems.getContext(),
                 DividerItemDecoration.VERTICAL));
 
-        Log.e("BEFORE", "HENA");
         /* Setting the Add Fab button listener */
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,16 +63,30 @@ public class ItemsActivity extends AppCompatActivity {
                 if(userSelectedList instanceof CheckList) {
                     Log.e("FAB", "Button Pressed");
                     CheckList taskList = (CheckList) userSelectedList;
-                    taskList.addItem("Task", "task", null, 1, 2, null);
+                    taskList.addItem("New Task", "task", null, 1, 2, null);
+                    adapter.notifyDataSetChanged();
                     adapter.notifyItemInserted(taskList.getItems().size() - 1);
                 }
             }
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK) {
+            if(requestCode == 1) {
+                TaskItem editedTask = (TaskItem)data.getSerializableExtra("Edited Task");
+                items.set(adapter.getLastAdapterPosition(),editedTask);
+                adapter.notifyItemChanged(adapter.getLastAdapterPosition());
+            }
+        }
     }
 
     /* Creating RecyclerView Adapter and ViewHolder */
     public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
         private ArrayList<Item> userSelectedListItems;
+        private int lastAdapterPosition;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView itemNameTextView;
@@ -80,6 +96,7 @@ public class ItemsActivity extends AppCompatActivity {
             public ImageView deleteImageView;
 
 
+            @SuppressLint("ResourceType")
             public ViewHolder(View itemView) {
                 super(itemView);
 
@@ -87,13 +104,39 @@ public class ItemsActivity extends AppCompatActivity {
                 itemDueDateTextView = itemView.findViewById(R.id.itemDueDateTextView);
                 checkImageView = itemView.findViewById(R.id.checkImageView);
                 deleteImageView = itemView.findViewById(R.id.deleteImageView);
+                priorityImageView =itemView.findViewById(R.drawable.high_priority);
+
+                checkImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TaskItem taskItem = (TaskItem) userSelectedList.getItemByIndex(getAdapterPosition());
+                        taskItem.setChecked(!taskItem.isChecked());
+                        adapter.notifyItemChanged(getAdapterPosition());
+                    }
+                });
+
+                deleteImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        userSelectedList.removeItemByIndex(getAdapterPosition());
+                        adapter.notifyItemRemoved(getAdapterPosition());
+                    }
+                });
 
                 itemView.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View view) {
-//                Toast.makeText(getContext(), "Item" + getAdapterPosition(), Toast.LENGTH_LONG).show();
+                lastAdapterPosition = getAdapterPosition();
+                Item item = userSelectedList.getItemByIndex(getAdapterPosition());
+
+                if(item instanceof TaskItem) {
+                    TaskItem taskItem = (TaskItem) item;
+                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+                    editTaskIntent.putExtra("SELECTEDTASK", taskItem);
+                    startActivityForResult(editTaskIntent, 1);
+                }
             }
 
 
@@ -122,7 +165,7 @@ public class ItemsActivity extends AppCompatActivity {
 
             holder.itemNameTextView.setText(item.getTitle());
             holder.itemDueDateTextView.setText(item.getTitle());
-
+//            holder.priorityImageView.setImageResource(R.drawable.medium_priority);
             if(item instanceof TaskItem) {
                 TaskItem taskItem = (TaskItem) item;
                 if(taskItem.isChecked()) {
@@ -134,6 +177,10 @@ public class ItemsActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return userSelectedListItems.size();
+        }
+
+        public int getLastAdapterPosition() {
+            return lastAdapterPosition;
         }
     }
 }

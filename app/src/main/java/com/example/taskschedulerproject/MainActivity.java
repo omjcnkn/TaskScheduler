@@ -78,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
                 deleteImageButton = itemView.findViewById(R.id.deleteImageButton);
 
+                deleteImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        userBoard.removeListByIndex(getAdapterPosition());
+                        adapter.notifyItemRemoved(getAdapterPosition());
+                    }
+                });
+
                 itemView.setOnClickListener(this);
             }
 

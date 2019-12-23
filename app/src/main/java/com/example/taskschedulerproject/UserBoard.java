@@ -25,6 +25,10 @@ public class UserBoard {
         lists.remove(list);
     }
 
+    public void removeListByIndex(int index) {
+        lists.remove(index);
+    }
+
     public ItemList getListByIndex(int index) {
         return lists.get(index);
     }

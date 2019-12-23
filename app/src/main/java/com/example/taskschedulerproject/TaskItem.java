@@ -1,8 +1,9 @@
 package com.example.taskschedulerproject;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TaskItem extends Item {
+public class TaskItem extends Item implements Serializable {
     private int priority;
     private int duration;
     private Date deadline;
@@ -16,15 +17,15 @@ public class TaskItem extends Item {
                     Date deadline) {
         super(title, description, date);
         this.priority = priority;
-        duration = duration;
-        deadline = deadline;
+        this.duration = duration;
+        this.deadline = deadline;
     }
 
     public int getPriority() {
         return priority;
     }
 
-    public void setPriority(short priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -32,12 +33,12 @@ public class TaskItem extends Item {
         return duration;
     }
 
-    public void setDuration(short duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
     public Date getDeadline() {
-        return deadline;
+        return this.deadline;
     }
 
     public void setDeadline(Date deadline) {
@@ -47,8 +48,8 @@ public class TaskItem extends Item {
     public boolean isChecked() {
         return checked;
     }
-
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+
 }

@@ -1,8 +1,9 @@
 package com.example.taskschedulerproject;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public abstract class Item {
+public abstract class Item implements Serializable {
     private String title;
     private String description;
     private Date date;

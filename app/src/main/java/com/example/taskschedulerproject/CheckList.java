@@ -11,8 +11,8 @@ public class CheckList extends ItemList {
     public void addItem(String title,
                         String description,
                         Date date,
-                        short priority,
-                        short duration,
+                        int priority,
+                        int duration,
                         Date deadline) {
         ArrayList<Item> allTasks = getItems();
         allTasks.add(new TaskItem(title, description, date, priority, duration, deadline));

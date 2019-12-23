@@ -1,9 +1,10 @@
 package com.example.taskschedulerproject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public abstract class ItemList {
+public abstract class ItemList implements Serializable {
     private String listTitle;
     private ArrayList<Item> items;
     private String listDate;
@@ -17,8 +18,8 @@ public abstract class ItemList {
     public abstract void addItem(String title,
                                  String description,
                                  Date date,
-                                 short priority,
-                                 short duration,
+                                 int priority,
+                                 int duration,
                                  Date deadline);
 
     public void removeItemByIndex(int index) {

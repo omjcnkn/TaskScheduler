@@ -3,16 +3,16 @@ package com.example.taskschedulerproject;
 import java.util.Date;
 
 public class TaskItem extends Item {
-    private short priority;
-    private short duration;
+    private int priority;
+    private int duration;
     private Date deadline;
     private boolean checked;
 
     public TaskItem(String title,
                     String description,
                     Date date,
-                    short priority,
-                    short duration,
+                    int priority,
+                    int duration,
                     Date deadline) {
         super(title, description, date);
         this.priority = priority;
@@ -20,7 +20,7 @@ public class TaskItem extends Item {
         deadline = deadline;
     }
 
-    public short getPriority() {
+    public int getPriority() {
         return priority;
     }
 
@@ -28,7 +28,7 @@ public class TaskItem extends Item {
         this.priority = priority;
     }
 
-    public short getDuration() {
+    public int getDuration() {
         return duration;
     }
 

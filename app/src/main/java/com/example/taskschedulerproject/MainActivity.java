@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         addNewListFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userBoard.createNewNotesList("Notes List");
+                userBoard.createNewCheckList("Notes List");
                 adapter.notifyItemInserted(userBoard.getLists().size() - 1);
             }
         });
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent selectedListIntent = new Intent(MainActivity.this, ItemsActivity.class);
+                selectedListIntent.putExtra("SELECTEDLIST", userBoard.getListByIndex(getAdapterPosition()));
                 startActivity(selectedListIntent);
             }
         }

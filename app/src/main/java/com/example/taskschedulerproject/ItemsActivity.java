@@ -28,18 +28,21 @@ public class ItemsActivity extends AppCompatActivity {
 
     private RecyclerView rvItems;
     private FloatingActionButton addNewListItemFab;
-
+    DatabaseHelper dph;
     private ItemsAdapter adapter;
     ArrayList<Item> items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items);
-
+        createDatabase();
         initLogic();
         initUI();
     }
+    private void createDatabase(){
+        dph = new DatabaseHelper(getApplicationContext());
 
+    }
     private void initLogic() {
         userSelectedList = (ItemList)getIntent().getSerializableExtra("SELECTEDLIST");
     }
@@ -61,11 +64,11 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(userSelectedList instanceof CheckList) {
-                    Log.e("FAB", "Button Pressed");
                     CheckList taskList = (CheckList) userSelectedList;
                     taskList.addItem("New Task", "task", null, 1, 2, null);
                     adapter.notifyDataSetChanged();
                     adapter.notifyItemInserted(taskList.getItems().size() - 1);
+                    dph.insertTaskItem();
                 }
             }
         });

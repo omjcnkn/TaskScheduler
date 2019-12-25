@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Id INTEGER PRIMARY KEY," +
                 "List TEXT,"+
                 "TaskTitle TEXT,"+
-                "TaskDiscription TEXT,"+
+                "TaskDescription TEXT,"+
                 "TaskDate TEXT,"+
                 "TaskPriority INTEGER(1),"+
                 "TaskDuration TEXT,"+
@@ -43,9 +43,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + NOTES_TABLE + " ("+
                 "Id INTEGER PRIMARY KEY," +
                 "List TEXT,"+
-                "TaskTitle TEXT,"+
-                "TaskDiscription TEXT,"+
-                "TaskDate TEXT)"
+                "NoteTitle TEXT,"+
+                "NoteDescription TEXT,"+
+                "NoteDate TEXT)"
         );
 
     }
@@ -56,6 +56,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean insertTaskItem(String listName,String title,String desc,String creationDate,int priority,String taskDuration,String taskDeadline) throws SQLException{
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("List",listName);
+        contentValues.put("TaskTitle",title);
+        contentValues.put("TaskDescription",desc);
+        contentValues.put("TaskDate",creationDate);
+        contentValues.put("TaskPriority",priority);
+        contentValues.put("TaskDuration",taskDuration);
+        contentValues.put("TaskDeadline",taskDeadline);
+        contentValues.put("TaskChecked",0);
+        db.insertOrThrow(TASKS_TABLE,null,contentValues);
+        return true;
+    }
     public boolean insertCheckList(String title, String date) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 

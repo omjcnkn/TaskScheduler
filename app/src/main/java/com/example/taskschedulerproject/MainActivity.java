@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
         addNewListFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userBoard.createNewCheckList("Notes List 2");
+                userBoard.createNewCheckList("Notes List 3");
                 adapter.notifyItemInserted(userBoard.getLists().size() - 1);
-                dbh.insertNotesList("Notes List 2","1df6s5a4f156asd");
-                Cursor c = dbh.getList("Notes List 2");
+                dbh.insertNotesList("Notes List 3","1df6s5a4f156asd");
+                Cursor c = dbh.getList("Notes List 3");
                 Toast.makeText(getApplicationContext(),""+c.getColumnCount(),Toast.LENGTH_SHORT).show();
 
             }

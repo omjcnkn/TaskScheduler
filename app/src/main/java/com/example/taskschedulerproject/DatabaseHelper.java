@@ -2,6 +2,7 @@ package com.example.taskschedulerproject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -9,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TaskSchedDB";
     private static final String MAIN_BOARD_NAME = "UserBoard";
+    private static final String TASKS_TABLE = "Tasks";
+    private static final String NOTES_TABLE = "Notes";
     private final String CHECK_LIST_TYPE = "CheckList";
     private final String NOTES_LIST_TYPE = "NotesList";
 
@@ -23,6 +26,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ListName TEXT UNIQUE," +
                 "CreationDate TEXT," +
                 "ListType TEXT)");
+
+        db.execSQL("CREATE TABLE " + TASKS_TABLE + " ("+
+                "Id INTEGER PRIMARY KEY," +
+                "List TEXT,"+
+                "TaskTitle TEXT,"+
+                "TaskDiscription TEXT,"+
+                "TaskDate TEXT,"+
+                "TaskPriority INTEGER(1),"+
+                "TaskDuration TEXT,"+
+                "TaskDeadline TEXT,"+
+                "TaskChecked INTEGER(1))"
+        );
+
+        db.execSQL("CREATE TABLE " + NOTES_TABLE + " ("+
+                "Id INTEGER PRIMARY KEY," +
+                "List TEXT,"+
+                "TaskTitle TEXT,"+
+                "TaskDiscription TEXT,"+
+                "TaskDate TEXT)"
+        );
+
     }
 
     @Override
@@ -36,18 +60,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("ListName", title);
-        contentValues.put("Date", date);
+        contentValues.put("CreationDate", date);
         contentValues.put("ListType", CHECK_LIST_TYPE);
         db.insertOrThrow(MAIN_BOARD_NAME, null, contentValues);
-        db.execSQL("CREATE TABLE " + title + " (" +
-                "Id INTEGER PRIMARY KEY," +
-                "Title TEXT," +
-                "Description TEXT," +
-                "CreationDate TEXT," +
-                "Priority INTEGER(3)," +
-                "Duration TEXT," +
-                "Deadline TEXT," +
-                "Checked INTEGER)");
+//        db.execSQL("CREATE TABLE " + title + " (" +
+//                "Id INTEGER PRIMARY KEY," +
+//                "Title TEXT," +
+//                "Description TEXT," +
+//                "CreationDate TEXT," +
+//                "Priority INTEGER(3)," +
+//                "Duration TEXT," +
+//                "Deadline TEXT," +
+//                "Checked INTEGER)");
         return true;
     }
 
@@ -56,14 +80,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("ListName", title);
-        contentValues.put("Date", date);
+        contentValues.put("CreationDate", date);
         contentValues.put("ListType", NOTES_LIST_TYPE);
         db.insertOrThrow(MAIN_BOARD_NAME, null, contentValues);
-        db.execSQL("CREATE TABLE " + title + " (" +
-                "Id INTEGER PRIMARY KEY," +
-                "Title TEXT," +
-                "Description TEXT," +
-                "CreationDate TEXT)");
+//        db.execSQL("CREATE TABLE " + title + " (" +
+//                "Id INTEGER PRIMARY KEY," +
+//                "Title TEXT," +
+//                "Description TEXT," +
+//                "CreationDate TEXT)");
         return true;
     }
 
@@ -72,7 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("ListName", title);
-        contentValues.put("Date", date);
+        contentValues.put("CreationDate", date);
         contentValues.put("ListType", CHECK_LIST_TYPE);
 
         db.update(MAIN_BOARD_NAME, contentValues, "id = ? ", new String[] {Integer.toString(id)});
@@ -85,11 +109,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("ListName", title);
-        contentValues.put("Date", date);
+        contentValues.put("CreationDate", date);
         contentValues.put("ListType", NOTES_LIST_TYPE);
 
         db.update(MAIN_BOARD_NAME, contentValues, "id = ? ", new String[] {Integer.toString(id)});
 
         return true;
+    }
+    public Cursor getList(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from "+MAIN_BOARD_NAME+" where ListName="+name+"", null );
+        return res;
     }
 }

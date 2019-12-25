@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,44 +17,46 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ItemsActivity extends AppCompatActivity {
     private ItemList userSelectedList;
 
     private RecyclerView rvItems;
     private FloatingActionButton addNewListItemFab;
-    DatabaseHelper dph;
+
     private ItemsAdapter adapter;
     ArrayList<Item> items;
+
+    private DatabaseHelper dbh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items);
+
         createDatabase();
         initLogic();
         initUI();
     }
-    private void createDatabase(){
-        dph = new DatabaseHelper(getApplicationContext());
 
+    private void createDatabase(){
+        dbh = new DatabaseHelper(getApplicationContext());
+        dbh.deleteAllTaskItems();
+        dbh.deleteAllNoteItems();
     }
+
     private void initLogic() {
-        userSelectedList = (ItemList)getIntent().getSerializableExtra("SELECTEDLIST");
     }
 
     private void initUI() {
         rvItems = findViewById(R.id.itemsRecyclerView);
         addNewListItemFab = findViewById(R.id.addNewTaskActionButton);
 
-        items = userSelectedList.getItems();
-
-        adapter = new ItemsAdapter(items);
+        adapter = new ItemsAdapter(this, dbh.getCheckListItems("check list 1"));
         rvItems.setAdapter(adapter);
         rvItems.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         rvItems.addItemDecoration(new DividerItemDecoration(rvItems.getContext(),
@@ -63,13 +66,13 @@ public class ItemsActivity extends AppCompatActivity {
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userSelectedList instanceof CheckList) {
-                    CheckList taskList = (CheckList) userSelectedList;
-                    taskList.addItem("New Task", "task", null, 1, 2, null);
-                    adapter.notifyDataSetChanged();
-                    adapter.notifyItemInserted(taskList.getItems().size() - 1);
-                    dph.insertTaskItem();
+                dbh.insertTaskItem("CheckList", "Task 1", "Task", "25/12", 3, "30:00", "25/12");
+                Cursor cursor = dbh.getTaskItem("Task 1");
+                if(cursor == null) {
+                    Log.e("NULL CURSOR", "TRUE");
                 }
+
+                adapter.swapCursor(cursor);
             }
         });
 
@@ -88,7 +91,9 @@ public class ItemsActivity extends AppCompatActivity {
 
     /* Creating RecyclerView Adapter and ViewHolder */
     public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
-        private ArrayList<Item> userSelectedListItems;
+        private Context context;
+        private Cursor cursor;
+
         private int lastAdapterPosition;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -145,8 +150,9 @@ public class ItemsActivity extends AppCompatActivity {
 
         }
 
-        public ItemsAdapter(ArrayList<Item> userSelectedListItems) {
-            this.userSelectedListItems = userSelectedListItems;
+        public ItemsAdapter(Context context, Cursor cursor) {
+            this.context = context;
+            this.cursor = cursor;
         }
 
         @Override
@@ -164,26 +170,41 @@ public class ItemsActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ItemsAdapter.ViewHolder holder, int position) {
-            Item item = userSelectedListItems.get(position);
+//            holder.itemNameTextView.setText(item.getTitle());
+//            holder.itemDueDateTextView.setText(item.getTitle());
+////            holder.priorityImageView.setImageResource(R.drawable.medium_priority);
+//            if(item instanceof TaskItem) {
+//                TaskItem taskItem = (TaskItem) item;
+//                if(taskItem.isChecked()) {
+//                    holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//                }
+//            }
 
-            holder.itemNameTextView.setText(item.getTitle());
-            holder.itemDueDateTextView.setText(item.getTitle());
-//            holder.priorityImageView.setImageResource(R.drawable.medium_priority);
-            if(item instanceof TaskItem) {
-                TaskItem taskItem = (TaskItem) item;
-                if(taskItem.isChecked()) {
-                    holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                }
+            if(cursor.moveToPosition(position)) {
+                holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("TaskTitle")));
+                holder.itemDueDateTextView.setText(cursor.getString(cursor.getColumnIndex("TaskDeadline")));
             }
         }
 
         @Override
         public int getItemCount() {
-            return userSelectedListItems.size();
+            return cursor.getCount();
         }
 
         public int getLastAdapterPosition() {
             return lastAdapterPosition;
+        }
+
+        public void swapCursor(Cursor newCursor) {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            cursor = newCursor;
+
+            if(newCursor != null) {
+                notifyDataSetChanged();
+            }
         }
     }
 }

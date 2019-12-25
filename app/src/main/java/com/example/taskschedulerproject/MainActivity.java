@@ -9,10 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,13 +28,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    private UserBoard userBoard;
-
     private RecyclerView rvLists;
     private FloatingActionButton addNewListFab;
+    private EditText listNameEditText;
 
     private ListsAdapter adapter;
-    ArrayList<ItemList> allCreatedLists;
+    private LinearLayoutManager linearLayoutManager;
+
     private DatabaseHelper dbh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,26 +47,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void createDataBase(){
         dbh = new DatabaseHelper(getApplicationContext());
-
-
     }
+
     private void initLogic() {
-        userBoard = new UserBoard("Mahmoud Ahmed Khalil");
+
     }
 
     private void initUI() {
         addNewListFab = findViewById(R.id.addNewListFab);
         rvLists = findViewById(R.id.listsContainer);
+        listNameEditText = findViewById(R.id.listNameEditText);
 
         /* Setting up the RecyclerView */
-        allCreatedLists = userBoard.getLists();
-
-        adapter = new ListsAdapter(allCreatedLists);
+        adapter = new ListsAdapter(this, dbh.getAllLists());
 
         rvLists.setAdapter(adapter);
-        rvLists.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        rvLists.setLayoutManager(linearLayoutManager);
+        rvLists.scrollToPosition(adapter.getItemCount() - 1);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -82,18 +84,33 @@ public class MainActivity extends AppCompatActivity {
         addNewListFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userBoard.createNewCheckList("Notes List 3");
-                adapter.notifyItemInserted(userBoard.getLists().size() - 1);
-                dbh.insertNotesList("Notes List 3","1df6s5a4f156asd");
-                Cursor c = dbh.getList("Notes List 3");
-                Toast.makeText(getApplicationContext(),""+c.getColumnCount(),Toast.LENGTH_SHORT).show();
+                /* Inserting in the db */
+                try {
+                    dbh.insertNotesList(listNameEditText.getText().toString(),"1df6s5a4f156asd");
+                    Cursor c = dbh.getAllLists();
+                    c.moveToFirst();
+                    Log.e("FAB CURSOR : ", c.getString(c.getColumnIndex("ListName")));
+                    adapter.swapCursor(c);
+                } catch(SQLException ex) {
+                    Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
 
+                /* Hiding keyboard */
+                View view = MainActivity.this.getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+                /* Showing last items */
+                rvLists.scrollToPosition(adapter.getItemCount() - 1);
             }
         });
     }
 
     public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> {
-        private ArrayList<ItemList> createdLists;
+        private Context context;
+        private Cursor cursor;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView listNameTextView, creationDateTextView;
@@ -110,8 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 deleteImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        userBoard.removeListByIndex(getAdapterPosition());
-                        adapter.notifyItemRemoved(getAdapterPosition());
                     }
                 });
 
@@ -121,14 +136,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent selectedListIntent = new Intent(MainActivity.this, ItemsActivity.class);
-                selectedListIntent.putExtra("SELECTEDLIST", userBoard.getListByIndex(getAdapterPosition()));
                 startActivity(selectedListIntent);
             }
         }
 
 
-        public ListsAdapter(ArrayList<ItemList> createdLists) {
-            this.createdLists = createdLists;
+        public ListsAdapter(Context context, Cursor cursor) {
+            this.context = context;
+            this.cursor = cursor;
         }
 
         @NonNull
@@ -147,16 +162,29 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.listNameTextView.setText(createdLists.get(position).getListTitle());
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MM/dd 'at' HH:mm:ss");
-            Date date = new Date(System.currentTimeMillis());
-            holder.creationDateTextView.setText("Created in "+formatter.format(date));
-            holder.deleteImageButton.setImageResource(R.drawable.delete_button);
+            if(cursor.moveToPosition(position)) {
+                holder.listNameTextView.setText(cursor.getString(cursor.getColumnIndex("ListName")));
+                holder.creationDateTextView.setText(cursor.getString(cursor.getColumnIndex("CreationDate")));
+            } else {
+                return;
+            }
         }
 
         @Override
         public int getItemCount() {
-            return createdLists.size();
+            return cursor.getCount();
+        }
+
+        public void swapCursor(Cursor newCursor) {
+            if(this.cursor != null) {
+                cursor.close();
+            }
+
+            this.cursor = newCursor;
+
+            if(newCursor != null) {
+                notifyDataSetChanged();
+            }
         }
     }
 

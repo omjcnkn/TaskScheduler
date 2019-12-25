@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TASKS_TABLE + " ("+
                 "Id INTEGER PRIMARY KEY," +
                 "List TEXT,"+
-                "TaskTitle TEXT,"+
+                "TaskTitle TEXT UNIQUE,"+
                 "TaskDescription TEXT,"+
                 "TaskDate TEXT,"+
                 "TaskPriority INTEGER(1),"+
@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + NOTES_TABLE + " ("+
                 "Id INTEGER PRIMARY KEY," +
                 "List TEXT,"+
-                "NoteTitle TEXT,"+
+                "NoteTitle TEXT UNIQUE,"+
                 "NoteDescription TEXT,"+
                 "NoteDate TEXT)"
         );
@@ -56,7 +56,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertTaskItem(String listName,String title,String desc,String creationDate,int priority,String taskDuration,String taskDeadline) throws SQLException{
+    public boolean insertCheckList(String title, String date) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ListName", title);
+        contentValues.put("CreationDate", date);
+        contentValues.put("ListType", CHECK_LIST_TYPE);
+        db.insertOrThrow(MAIN_BOARD_NAME, null, contentValues);
+        return true;
+    }
+
+    public boolean insertNotesList(String title, String date) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ListName", title);
+        contentValues.put("CreationDate", date);
+        contentValues.put("ListType", NOTES_LIST_TYPE);
+        db.insertOrThrow(MAIN_BOARD_NAME, null, contentValues);
+        return true;
+    }
+
+    public boolean insertTaskItem(String listName,String title,String desc,String creationDate,int priority,String taskDuration,String taskDeadline) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -71,39 +93,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insertOrThrow(TASKS_TABLE,null,contentValues);
         return true;
     }
-    public boolean insertCheckList(String title, String date) throws SQLException {
+
+    public boolean insertNoteItem(String listName, String title, String description, String creationDate) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ListName", title);
-        contentValues.put("CreationDate", date);
-        contentValues.put("ListType", CHECK_LIST_TYPE);
-        db.insertOrThrow(MAIN_BOARD_NAME, null, contentValues);
-//        db.execSQL("CREATE TABLE " + title + " (" +
-//                "Id INTEGER PRIMARY KEY," +
-//                "Title TEXT," +
-//                "Description TEXT," +
-//                "CreationDate TEXT," +
-//                "Priority INTEGER(3)," +
-//                "Duration TEXT," +
-//                "Deadline TEXT," +
-//                "Checked INTEGER)");
-        return true;
-    }
+        contentValues.put("List",listName);
+        contentValues.put("NoteTitle",title);
+        contentValues.put("NoteDescription", description);
+        contentValues.put("NoteDate", creationDate);
 
-    public boolean insertNotesList(String title, String date) throws SQLException {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("ListName", title);
-        contentValues.put("CreationDate", date);
-        contentValues.put("ListType", NOTES_LIST_TYPE);
-        db.insertOrThrow(MAIN_BOARD_NAME, null, contentValues);
-//        db.execSQL("CREATE TABLE " + title + " (" +
-//                "Id INTEGER PRIMARY KEY," +
-//                "Title TEXT," +
-//                "Description TEXT," +
-//                "CreationDate TEXT)");
+        db.insertOrThrow(TASKS_TABLE,null,contentValues);
         return true;
     }
 
@@ -132,9 +132,92 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return true;
     }
+
+    public boolean updateCheckListItem(Integer id, String listName,String title,String desc,
+                                       String creationDate,int priority,String taskDuration,String taskDeadline) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("List",listName);
+        contentValues.put("TaskTitle",title);
+        contentValues.put("TaskDescription",desc);
+        contentValues.put("TaskDate",creationDate);
+        contentValues.put("TaskPriority",priority);
+        contentValues.put("TaskDuration",taskDuration);
+        contentValues.put("TaskDeadline",taskDeadline);
+        contentValues.put("TaskChecked",0);
+
+        db.update(TASKS_TABLE, contentValues, "id = ? ", new String[] {Integer.toString(id)});
+
+        return true;
+    }
+
+    public boolean updateNoteListItem(Integer id, String listName, String title, String description, String creationDate) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("List",listName);
+        contentValues.put("NoteTitle",title);
+        contentValues.put("NoteDescription", description);
+        contentValues.put("NoteDate", creationDate);
+
+        db.update(NOTES_TABLE, contentValues, "id = ? ", new String[] {Integer.toString(id)});
+        return true;
+    }
+
+    public Cursor getAllLists() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + MAIN_BOARD_NAME, null);
+
+        return res;
+    }
+
+    public Cursor getCheckListItems(String listName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE List='" + listName + "'", null);
+
+        return res;
+    }
+
+    public Cursor getNoteListItems(String listName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE List='" + listName + "'", null);
+
+        return res;
+    }
+
     public Cursor getList(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "SELECT * FROM "+MAIN_BOARD_NAME+" WHERE ListName='"+name+"'", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + MAIN_BOARD_NAME + " WHERE ListName='"+name+"'", null );
         return res;
+    }
+
+    public Cursor getTaskItem(String taskTitle) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE TaskTitle='" + taskTitle + "'", null);
+
+        return res;
+    }
+
+    public Cursor getNoteItem(String noteTitle) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE TaskTitle='" + noteTitle + "'", null);
+
+        return res;
+    }
+
+    public void deleteAllLists() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + MAIN_BOARD_NAME);
+    }
+
+    public void deleteAllTaskItems() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TASKS_TABLE);
+    }
+
+    public void deleteAllNoteItems() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + NOTES_TABLE);
     }
 }

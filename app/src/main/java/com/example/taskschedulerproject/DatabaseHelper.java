@@ -220,4 +220,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + NOTES_TABLE);
     }
+
+    public void removeList(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(MAIN_BOARD_NAME, "Id=" + id + "", null);
+    }
 }

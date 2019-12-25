@@ -63,6 +63,8 @@ public class ItemsActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        getSupportActionBar().setTitle(currentListName);
+
         rvItems = findViewById(R.id.itemsRecyclerView);
         addNewListItemFab = findViewById(R.id.addNewTaskActionButton);
 
@@ -192,18 +194,7 @@ public class ItemsActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ItemsAdapter.ViewHolder holder, int position) {
-//            holder.itemNameTextView.setText(item.getTitle());
-//            holder.itemDueDateTextView.setText(item.getTitle());
-////            holder.priorityImageView.setImageResource(R.drawable.medium_priority);
-//            if(item instanceof TaskItem) {
-//                TaskItem taskItem = (TaskItem) item;
-//                if(taskItem.isChecked()) {
-//                    holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//                }
-//            }
-
             if(cursor.moveToPosition(position)) {
-                Log.e("IN ONBINDVIEWHOLDER", "true");
                 if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
                     holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("TaskTitle")));
                     holder.itemDueDateTextView.setText(cursor.getString(cursor.getColumnIndex("TaskDeadline")));

@@ -90,9 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+                dbh.removeList(Integer.parseInt(viewHolder.itemView.getTag().toString()));
+                adapter.swapCursor(dbh.getAllLists());
             }
-        });
+        }).attachToRecyclerView(rvLists);
 
 
 
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         dbh.insertNotesList(listNameEditText.getText().toString(), "current date");
                     }
-                    
+
                     Cursor c = dbh.getAllLists();
                     adapter.swapCursor(c);
                 } catch(SQLException ex) {
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             if(cursor.moveToPosition(position)) {
                 holder.listNameTextView.setText(cursor.getString(cursor.getColumnIndex("ListName")));
                 holder.creationDateTextView.setText(cursor.getString(cursor.getColumnIndex("CreationDate")));
+                holder.itemView.setTag(cursor.getString(cursor.getColumnIndex("Id")));
             } else {
                 return;
             }

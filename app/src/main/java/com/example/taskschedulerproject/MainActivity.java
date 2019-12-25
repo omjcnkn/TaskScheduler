@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createDataBase(){
         dbh = new DatabaseHelper(getApplicationContext());
+
 
     }
     private void initLogic() {
@@ -79,8 +82,12 @@ public class MainActivity extends AppCompatActivity {
         addNewListFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userBoard.createNewCheckList("Notes List "+ allCreatedLists.size() );
+                userBoard.createNewCheckList("Notes List 2");
                 adapter.notifyItemInserted(userBoard.getLists().size() - 1);
+                dbh.insertNotesList("Notes List 2","1df6s5a4f156asd");
+                Cursor c = dbh.getList("Notes List 2");
+                Toast.makeText(getApplicationContext(),""+c.getColumnCount(),Toast.LENGTH_SHORT).show();
+
             }
         });
     }

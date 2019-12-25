@@ -13,8 +13,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String MAIN_BOARD_NAME = "UserBoard";
     private static final String TASKS_TABLE = "Tasks";
     private static final String NOTES_TABLE = "Notes";
-    private final String CHECK_LIST_TYPE = "CheckList";
-    private final String NOTES_LIST_TYPE = "NotesList";
+    public static final String CHECK_LIST_TYPE = "CheckList";
+    public static final String NOTES_LIST_TYPE = "NotesList";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -103,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("NoteDescription", description);
         contentValues.put("NoteDate", creationDate);
 
-        db.insertOrThrow(TASKS_TABLE,null,contentValues);
+        db.insertOrThrow(NOTES_TABLE,null,contentValues);
         return true;
     }
 

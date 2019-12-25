@@ -27,12 +27,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
+        <ImageButton
+            android:id="@+id/checkListImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:tag="0"
+            android:tint="@color/colorAccent"
+            app:srcCompat="@drawable/checklist" />
+
         <EditText
             android:id="@+id/listNameEditText"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:layout_weight="1"
+            android:layout_weight="20"
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
             android:inputType="textPersonName"

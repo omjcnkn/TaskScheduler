@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvLists;
     private FloatingActionButton addNewListFab;
     private EditText listNameEditText;
+    private ImageButton checkListImageButton;
 
     private ListsAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -57,6 +59,20 @@ public class MainActivity extends AppCompatActivity {
         addNewListFab = findViewById(R.id.addNewListFab);
         rvLists = findViewById(R.id.listsContainer);
         listNameEditText = findViewById(R.id.listNameEditText);
+        checkListImageButton = findViewById(R.id.checkListImageButton);
+
+        checkListImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkListImageButton.getTag().toString().equalsIgnoreCase("0")) {
+                    checkListImageButton.setImageResource(R.drawable.noteslist);
+                    checkListImageButton.setTag("1");
+                } else if(checkListImageButton.getTag().toString().equalsIgnoreCase("1")) {
+                    checkListImageButton.setImageResource(R.drawable.checklist);
+                    checkListImageButton.setTag("0");
+                }
+            }
+        });
 
         /* Setting up the RecyclerView */
         adapter = new ListsAdapter(this, dbh.getAllLists());
@@ -86,10 +102,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /* Inserting in the db */
                 try {
-                    dbh.insertNotesList(listNameEditText.getText().toString(),"1df6s5a4f156asd");
+                    if(checkListImageButton.getTag().toString().equalsIgnoreCase("0")) {
+                        dbh.insertCheckList(listNameEditText.getText().toString(), "current date");
+                    } else {
+                        dbh.insertNotesList(listNameEditText.getText().toString(), "current date");
+                    }
+                    
                     Cursor c = dbh.getAllLists();
-                    c.moveToFirst();
-                    Log.e("FAB CURSOR : ", c.getString(c.getColumnIndex("ListName")));
                     adapter.swapCursor(c);
                 } catch(SQLException ex) {
                     Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -136,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent selectedListIntent = new Intent(MainActivity.this, ItemsActivity.class);
+                cursor.moveToPosition(getAdapterPosition());
+                String listName = cursor.getString(cursor.getColumnIndex("ListName"));
+                String listType = cursor.getString(cursor.getColumnIndex("ListType"));
+                selectedListIntent.putExtra("ListName", listName);
+                selectedListIntent.putExtra("ListType", listType);
                 startActivity(selectedListIntent);
             }
         }

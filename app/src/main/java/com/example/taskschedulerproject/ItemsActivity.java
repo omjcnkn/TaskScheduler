@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,6 +34,9 @@ public class ItemsActivity extends AppCompatActivity {
     ArrayList<Item> items;
 
     private DatabaseHelper dbh;
+
+    private String currentListName;
+    private String currentListType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +55,24 @@ public class ItemsActivity extends AppCompatActivity {
     }
 
     private void initLogic() {
+        currentListName = getIntent().getStringExtra("ListName");
+        currentListType = getIntent().getStringExtra("ListType");
+
+        Log.e("List_Name ", currentListName);
+        Log.e("List_Type ", currentListType);
     }
 
     private void initUI() {
         rvItems = findViewById(R.id.itemsRecyclerView);
         addNewListItemFab = findViewById(R.id.addNewTaskActionButton);
 
-        adapter = new ItemsAdapter(this, dbh.getCheckListItems("check list 1"));
+        Cursor c;
+        if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+            c = dbh.getCheckListItems(currentListName);
+        } else {
+            c = dbh.getNoteListItems(currentListName);
+        }
+        adapter = new ItemsAdapter(this, c);
         rvItems.setAdapter(adapter);
         rvItems.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         rvItems.addItemDecoration(new DividerItemDecoration(rvItems.getContext(),
@@ -66,13 +82,19 @@ public class ItemsActivity extends AppCompatActivity {
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbh.insertTaskItem("CheckList", "Task 1", "Task", "25/12", 3, "30:00", "25/12");
-                Cursor cursor = dbh.getTaskItem("Task 1");
-                if(cursor == null) {
-                    Log.e("NULL CURSOR", "TRUE");
+                try {
+                    if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                        dbh.insertTaskItem(currentListName, "New Task", "New Task", "25/12", 3, "30:00", "25/12");
+                        Cursor cursor = dbh.getCheckListItems(currentListName);
+                        adapter.swapCursor(cursor);
+                    } else if(currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
+                        dbh.insertNoteItem(currentListName, "New Note", "new Note", "25/12");
+                        Cursor cursor = dbh.getNoteListItems(currentListName);
+                        adapter.swapCursor(cursor);
+                    }
+                } catch(SQLException ex) {
+                    Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
                 }
-
-                adapter.swapCursor(cursor);
             }
         });
 
@@ -181,8 +203,14 @@ public class ItemsActivity extends AppCompatActivity {
 //            }
 
             if(cursor.moveToPosition(position)) {
-                holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("TaskTitle")));
-                holder.itemDueDateTextView.setText(cursor.getString(cursor.getColumnIndex("TaskDeadline")));
+                Log.e("IN ONBINDVIEWHOLDER", "true");
+                if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("TaskTitle")));
+                    holder.itemDueDateTextView.setText(cursor.getString(cursor.getColumnIndex("TaskDeadline")));
+                } else {
+                    holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("NoteTitle")));
+                    holder.itemDueDateTextView.setVisibility(View.INVISIBLE);
+                }
             }
         }
 

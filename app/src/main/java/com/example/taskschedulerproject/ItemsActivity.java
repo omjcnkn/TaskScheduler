@@ -104,7 +104,7 @@ public class ItemsActivity extends AppCompatActivity {
                 itemDueDateTextView = itemView.findViewById(R.id.itemDueDateTextView);
                 checkImageView = itemView.findViewById(R.id.checkImageView);
                 deleteImageView = itemView.findViewById(R.id.deleteImageView);
-                priorityImageView =itemView.findViewById(R.drawable.high_priority);
+                priorityImageView =itemView.findViewById(R.id.priorityImageView);
 
                 checkImageView.setOnClickListener(new View.OnClickListener() {
                     @Override

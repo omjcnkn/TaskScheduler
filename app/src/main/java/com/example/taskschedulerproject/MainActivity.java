@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void createDataBase(){
         dbh = new DatabaseHelper(getApplicationContext());
+
+        dbh.deleteAllNoteItems();
+        dbh.deleteAllTaskItems();
     }
 
     private void initLogic() {
@@ -93,8 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                dbh.removeList(Integer.parseInt(viewHolder.itemView.getTag().toString()));
-                adapter.swapCursor(dbh.getAllLists());
+                deleteSelectedList(((ListsAdapter.ViewHolder)viewHolder).listNameTextView.getText().toString());
             }
         }).attachToRecyclerView(rvLists);
 
@@ -131,6 +135,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void deleteSelectedList(String listName) {
+        dbh.removeList(listName);
+        Cursor c = dbh.getAllLists();
+        adapter.swapCursor(c);
+    }
+
     public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> {
         private Context context;
         private Cursor cursor;
@@ -151,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 deleteImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        deleteSelectedList(listNameTextView.getText().toString());
                     }
                 });
 

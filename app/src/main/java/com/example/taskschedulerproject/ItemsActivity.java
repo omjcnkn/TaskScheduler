@@ -85,12 +85,13 @@ public class ItemsActivity extends AppCompatActivity {
                 try {
                     if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
                         dbh.insertTaskItem(currentListName, "New Task", "New Task", "25/12", 3, "30:00", "25/12");
+                        Cursor cursor = dbh.getCheckListItems(currentListName);
+                        adapter.swapCursor(cursor);
                     } else if(currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
                         dbh.insertNoteItem(currentListName, "New Note", "new Note", "25/12");
+                        Cursor cursor = dbh.getNoteListItems(currentListName);
+                        adapter.swapCursor(cursor);
                     }
-
-                    Cursor cursor = dbh.getNoteListItems(currentListName);
-                    adapter.swapCursor(cursor);
                 } catch(SQLException ex) {
                     Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -99,23 +100,26 @@ public class ItemsActivity extends AppCompatActivity {
 
     }
 
+    public void deleteSelectedItem(String itemName) {
+        if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+            dbh.removeCheckListItem(itemName);
+            Cursor c = dbh.getCheckListItems(currentListName);
+            adapter.swapCursor(c);
+        } else {
+            dbh.removeNoteListItem(itemName);
+            Cursor c = dbh.getNoteListItems(currentListName);
+            adapter.swapCursor(c);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK) {
-            if(requestCode == 1) {
-                TaskItem editedTask = (TaskItem)data.getSerializableExtra("Edited Task");
-                items.set(adapter.getLastAdapterPosition(),editedTask);
-                adapter.notifyItemChanged(adapter.getLastAdapterPosition());
-            }
-        }
     }
 
     /* Creating RecyclerView Adapter and ViewHolder */
     public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
         private Context context;
         private Cursor cursor;
-
-        private int lastAdapterPosition;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView itemNameTextView;
@@ -126,7 +130,7 @@ public class ItemsActivity extends AppCompatActivity {
 
 
             @SuppressLint("ResourceType")
-            public ViewHolder(View itemView) {
+            public ViewHolder(final View itemView) {
                 super(itemView);
 
                 itemNameTextView = itemView.findViewById(R.id.itemNameTextView);
@@ -170,8 +174,9 @@ public class ItemsActivity extends AppCompatActivity {
                 deleteImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        userSelectedList.removeItemByIndex(getAdapterPosition());
-                        adapter.notifyItemRemoved(getAdapterPosition());
+//                        userSelectedList.removeItemByIndex(getAdapterPosition());
+//                        adapter.notifyItemRemoved(getAdapterPosition());
+                        deleteSelectedItem(itemNameTextView.getText().toString());
                     }
                 });
 
@@ -226,10 +231,6 @@ public class ItemsActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return cursor.getCount();
-        }
-
-        public int getLastAdapterPosition() {
-            return lastAdapterPosition;
         }
 
         public void swapCursor(Cursor newCursor) {

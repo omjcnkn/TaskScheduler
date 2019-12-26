@@ -221,9 +221,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + NOTES_TABLE);
     }
 
-    public void removeList(Integer id) {
+    public void removeList(String itemName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(MAIN_BOARD_NAME, "Id=" + id + "", null);
+        db.delete(MAIN_BOARD_NAME, "ListName='" + itemName + "'", null);
+
+        db.delete(TASKS_TABLE, "List='" + itemName + "'", null);
+        db.delete(NOTES_TABLE, "List='" + itemName + "'", null);
+    }
+
+    public void removeCheckListItem(String itemName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TASKS_TABLE, "TaskTitle='" + itemName + "'", null);
+    }
+
+    public void removeNoteListItem(String itemName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(NOTES_TABLE, "NoteTitle='" + itemName + "'", null);
     }
 }

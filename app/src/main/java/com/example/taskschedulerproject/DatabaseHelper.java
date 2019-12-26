@@ -133,8 +133,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateCheckListItem(Integer id, String listName,String title,String desc,
-                                       String creationDate,int priority,String taskDuration,String taskDeadline) throws SQLException {
+    public boolean updateCheckListItem(String taskTitle, String listName,String title,String desc,
+                                       String creationDate,int priority,String taskDuration,String taskDeadline, int taskChecked) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -145,14 +145,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("TaskPriority",priority);
         contentValues.put("TaskDuration",taskDuration);
         contentValues.put("TaskDeadline",taskDeadline);
-        contentValues.put("TaskChecked",0);
+        contentValues.put("TaskChecked", taskChecked);
 
-        db.update(TASKS_TABLE, contentValues, "id = ? ", new String[] {Integer.toString(id)});
+        db.update(TASKS_TABLE, contentValues, "TaskTitle='" + taskTitle + "'", null);
 
         return true;
     }
 
-    public boolean updateNoteListItem(Integer id, String listName, String title, String description, String creationDate) throws SQLException {
+    public boolean updateNoteListItem(String noteTitle, String listName, String title, String description, String creationDate) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -161,7 +161,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("NoteDescription", description);
         contentValues.put("NoteDate", creationDate);
 
-        db.update(NOTES_TABLE, contentValues, "id = ? ", new String[] {Integer.toString(id)});
+        db.update(NOTES_TABLE, contentValues, "NoteTitle=" + noteTitle, null);
         return true;
     }
 

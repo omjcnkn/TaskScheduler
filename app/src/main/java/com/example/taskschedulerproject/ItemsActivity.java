@@ -50,8 +50,6 @@ public class ItemsActivity extends AppCompatActivity {
 
     private void createDatabase(){
         dbh = new DatabaseHelper(getApplicationContext());
-        dbh.deleteAllTaskItems();
-        dbh.deleteAllNoteItems();
     }
 
     private void initLogic() {
@@ -87,13 +85,12 @@ public class ItemsActivity extends AppCompatActivity {
                 try {
                     if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
                         dbh.insertTaskItem(currentListName, "New Task", "New Task", "25/12", 3, "30:00", "25/12");
-                        Cursor cursor = dbh.getCheckListItems(currentListName);
-                        adapter.swapCursor(cursor);
                     } else if(currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
                         dbh.insertNoteItem(currentListName, "New Note", "new Note", "25/12");
-                        Cursor cursor = dbh.getNoteListItems(currentListName);
-                        adapter.swapCursor(cursor);
                     }
+
+                    Cursor cursor = dbh.getNoteListItems(currentListName);
+                    adapter.swapCursor(cursor);
                 } catch(SQLException ex) {
                     Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -141,9 +138,32 @@ public class ItemsActivity extends AppCompatActivity {
                 checkImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        TaskItem taskItem = (TaskItem) userSelectedList.getItemByIndex(getAdapterPosition());
-                        taskItem.setChecked(!taskItem.isChecked());
-                        adapter.notifyItemChanged(getAdapterPosition());
+                        try {
+                            Cursor c = dbh.getTaskItem(itemNameTextView.getText().toString());
+                            c.moveToFirst();
+                            String listName = c.getString(c.getColumnIndex("List"));
+                            String checkListName = c.getString(c.getColumnIndex("TaskTitle"));
+                            String checkListDescription = c.getString(c.getColumnIndex("TaskDescription"));
+                            String creationDate = c.getString(c.getColumnIndex("TaskDate"));
+                            int priority = c.getInt(c.getColumnIndex("TaskPriority"));
+                            String duration = c.getString(c.getColumnIndex("TaskDuration"));
+                            String deadline = c.getString(c.getColumnIndex("TaskDeadline"));
+                            int checked = c.getInt(c.getColumnIndex("TaskChecked"));
+
+                            if(checked == 0) {
+                                checked = 1;
+                            } else {
+                                checked = 0;
+                            }
+
+                            dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,
+                                    creationDate, priority, duration, deadline, checked);
+
+                            c = dbh.getCheckListItems(currentListName);
+                            adapter.swapCursor(c);
+                        } catch(SQLException ex) {
+                            Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
@@ -160,15 +180,15 @@ public class ItemsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                lastAdapterPosition = getAdapterPosition();
-                Item item = userSelectedList.getItemByIndex(getAdapterPosition());
-
-                if(item instanceof TaskItem) {
-                    TaskItem taskItem = (TaskItem) item;
-                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
-                    editTaskIntent.putExtra("SELECTEDTASK", taskItem);
-                    startActivityForResult(editTaskIntent, 1);
-                }
+//                lastAdapterPosition = getAdapterPosition();
+//                Item item = userSelectedList.getItemByIndex(getAdapterPosition());
+//
+//                if(item instanceof TaskItem) {
+//                    TaskItem taskItem = (TaskItem) item;
+//                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+//                    editTaskIntent.putExtra("SELECTEDTASK", taskItem);
+//                    startActivityForResult(editTaskIntent, 1);
+//                }
             }
 
 
@@ -196,11 +216,9 @@ public class ItemsActivity extends AppCompatActivity {
         public void onBindViewHolder(ItemsAdapter.ViewHolder holder, int position) {
             if(cursor.moveToPosition(position)) {
                 if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-                    holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("TaskTitle")));
-                    holder.itemDueDateTextView.setText(cursor.getString(cursor.getColumnIndex("TaskDeadline")));
+                    createNewTask(holder);
                 } else {
-                    holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("NoteTitle")));
-                    holder.itemDueDateTextView.setVisibility(View.INVISIBLE);
+                    createNewNote(holder);
                 }
             }
         }
@@ -224,6 +242,48 @@ public class ItemsActivity extends AppCompatActivity {
             if(newCursor != null) {
                 notifyDataSetChanged();
             }
+        }
+
+        public void createNewTask(ItemsAdapter.ViewHolder holder) {
+            holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("TaskTitle")));
+            holder.itemDueDateTextView.setText(cursor.getString(cursor.getColumnIndex("TaskDeadline")));
+            int priority = Integer.parseInt(cursor.getString(cursor.getColumnIndex("TaskPriority")));
+
+            switch(priority) {
+                case 1:
+                    holder.priorityImageView.setImageResource(R.drawable.high_priority);
+                    break;
+                case 2:
+                    holder.priorityImageView.setImageResource(R.drawable.medium_priority);
+                    break;
+                case 3:
+                    holder.priorityImageView.setImageResource(R.drawable.low_priority);
+                    break;
+            }
+
+            holder.checkImageView.setImageResource(R.drawable.check_mark);
+            holder.deleteImageView.setImageResource(R.drawable.delete_button);
+
+            if(cursor.getString(cursor.getColumnIndex("TaskChecked")).equalsIgnoreCase("1")) {
+                holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() |
+                        Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() &
+                        (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
+        }
+
+        public void createNewNote(ItemsAdapter.ViewHolder holder) {
+            holder.itemDueDateTextView.setVisibility(View.INVISIBLE);
+            holder.priorityImageView.setVisibility(View.INVISIBLE);
+            holder.checkImageView.setVisibility(View.INVISIBLE);
+
+            holder.itemDueDateTextView.setEnabled(false);
+            holder.priorityImageView.setEnabled(false);
+            holder.checkImageView.setEnabled(false);
+
+            holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("NoteTitle")));
+            holder.deleteImageView.setImageResource(R.drawable.delete_button);
         }
     }
 }

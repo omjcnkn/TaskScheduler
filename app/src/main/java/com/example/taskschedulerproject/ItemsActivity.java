@@ -1,7 +1,9 @@
 package com.example.taskschedulerproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,6 +79,17 @@ public class ItemsActivity extends AppCompatActivity {
         rvItems.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         rvItems.addItemDecoration(new DividerItemDecoration(rvItems.getContext(),
                 DividerItemDecoration.VERTICAL));
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                deleteSelectedItem(((ItemsAdapter.ViewHolder)viewHolder).itemNameTextView.getText().toString());
+            }
+        }).attachToRecyclerView(rvItems);
 
         /* Setting the Add Fab button listener */
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
@@ -174,8 +187,6 @@ public class ItemsActivity extends AppCompatActivity {
                 deleteImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        userSelectedList.removeItemByIndex(getAdapterPosition());
-//                        adapter.notifyItemRemoved(getAdapterPosition());
                         deleteSelectedItem(itemNameTextView.getText().toString());
                     }
                 });

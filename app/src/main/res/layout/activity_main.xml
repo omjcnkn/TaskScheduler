@@ -58,7 +58,8 @@
             android:clickable="true"
             android:src="@android:drawable/ic_input_add"
             android:tint="@color/colorWhite"
-            app:backgroundTint="@color/colorPrimary" />
+            app:backgroundTint="@color/colorPrimary"
+            app:fabSize="mini" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

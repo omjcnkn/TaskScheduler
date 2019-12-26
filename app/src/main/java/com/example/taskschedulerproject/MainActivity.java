@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
 
     private DatabaseHelper dbh;
+
+    private SimpleDateFormat stf;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLogic() {
-
+        stf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     }
 
     private void initUI() {
+        getSupportActionBar().setTitle("Task Scheduler");
+
         addNewListFab = findViewById(R.id.addNewListFab);
         rvLists = findViewById(R.id.listsContainer);
         listNameEditText = findViewById(R.id.listNameEditText);
@@ -104,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 /* Inserting in the db */
                 try {
                     if(checkListImageButton.getTag().toString().equalsIgnoreCase("0")) {
-                        dbh.insertCheckList(listNameEditText.getText().toString(), "current date");
+                        dbh.insertCheckList(listNameEditText.getText().toString(), stf.format(new Date()));
                     } else {
-                        dbh.insertNotesList(listNameEditText.getText().toString(), "current date");
+                        dbh.insertNotesList(listNameEditText.getText().toString(), stf.format(new Date()));
                     }
 
                     Cursor c = dbh.getAllLists();
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView listNameTextView, creationDateTextView;
-            public ImageView deleteImageButton;
+            public ImageView deleteImageButton, listTypeImageView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -143,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 creationDateTextView = itemView.findViewById(R.id.creationDateTextView);
 
                 deleteImageButton = itemView.findViewById(R.id.deleteImageButton);
+                listTypeImageView = itemView.findViewById(R.id.listTypeImageView);
 
                 deleteImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -191,6 +195,13 @@ public class MainActivity extends AppCompatActivity {
                 holder.listNameTextView.setText(cursor.getString(cursor.getColumnIndex("ListName")));
                 holder.creationDateTextView.setText(cursor.getString(cursor.getColumnIndex("CreationDate")));
                 holder.itemView.setTag(cursor.getString(cursor.getColumnIndex("Id")));
+                holder.deleteImageButton.setImageResource(R.drawable.delete_button);
+
+                if(cursor.getString(cursor.getColumnIndex("ListType")).equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    holder.listTypeImageView.setImageResource(R.drawable.checklist);
+                } else {
+                    holder.listTypeImageView.setImageResource(R.drawable.noteslist);
+                }
             } else {
                 return;
             }

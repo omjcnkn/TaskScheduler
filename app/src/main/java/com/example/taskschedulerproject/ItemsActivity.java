@@ -27,8 +27,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 public class ItemsActivity extends AppCompatActivity {
-    private ItemList userSelectedList;
-
     private RecyclerView rvItems;
     private FloatingActionButton addNewListItemFab;
 
@@ -95,18 +93,26 @@ public class ItemsActivity extends AppCompatActivity {
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-                        dbh.insertTaskItem(currentListName, "New Task", "New Task", "25/12", 3, "30:00", "25/12");
-                        Cursor cursor = dbh.getCheckListItems(currentListName);
-                        adapter.swapCursor(cursor);
-                    } else if(currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
-                        dbh.insertNoteItem(currentListName, "New Note", "new Note", "25/12");
-                        Cursor cursor = dbh.getNoteListItems(currentListName);
-                        adapter.swapCursor(cursor);
-                    }
-                } catch(SQLException ex) {
-                    Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+//                try {
+//                    if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+//                        dbh.insertTaskItem(currentListName, "New Task", "New Task", "25/12", 3, "30:00", "25/12");
+//                        Cursor cursor = dbh.getCheckListItems(currentListName);
+//                        adapter.swapCursor(cursor);
+//                    } else if(currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
+//                        dbh.insertNoteItem(currentListName, "New Note", "new Note", "25/12");
+//                        Cursor cursor = dbh.getNoteListItems(currentListName);
+//                        adapter.swapCursor(cursor);
+//                    }
+//                } catch(SQLException ex) {
+//                    Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+
+                if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    Intent intent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+                    intent.putExtra("MODE", "create");
+                    intent.putExtra("LIST", currentListName);
+                    startActivityForResult(intent, 1);
+                } else if (currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
                 }
             }
         });
@@ -127,6 +133,17 @@ public class ItemsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    Cursor c = dbh.getCheckListItems(currentListName);
+                    adapter.swapCursor(c);
+                } else if (currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
+                    Cursor c = dbh.getNoteListItems(currentListName);
+                    adapter.swapCursor(c);
+                }
+            }
+        }
     }
 
     /* Creating RecyclerView Adapter and ViewHolder */

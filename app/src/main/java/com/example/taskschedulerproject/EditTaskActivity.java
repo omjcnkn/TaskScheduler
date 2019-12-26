@@ -2,12 +2,15 @@ package com.example.taskschedulerproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EditTaskActivity extends AppCompatActivity {
     FloatingActionButton finish;
@@ -35,13 +39,24 @@ public class EditTaskActivity extends AppCompatActivity {
     Calendar c;
     int priorityId=0,MyDay=-1,MyMonth=-1,MyYear=-1,MyHour=-1,MyMin=-1;
 
-    private TaskItem selectedTaskItem;
+    private DatabaseHelper dbh;
+
+    private String intentTag = "";
+    private String intentListName = "";
+
+    private SimpleDateFormat stf;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
 
-//        selectedTaskItem = (TaskItem) getIntent().getSerializableExtra("SELECTEDTASK");
+        dbh = new DatabaseHelper(getApplicationContext());
+        stf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+
+        intentTag = getIntent().getStringExtra("MODE");
+        intentListName = getIntent().getStringExtra("LIST");
+
         timeButton = findViewById(R.id.timeButton);
         priority = findViewById(R.id.PrioritySpinner);
         DatePicked = findViewById(R.id.dateEditText);
@@ -57,12 +72,6 @@ public class EditTaskActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,priorities);
         finish = findViewById(R.id.NoteFAB);
         priority.setAdapter(adapter);
-
-
-//        TaskTitle.setText(selectedTaskItem.getTitle());
-//        TaskDiscription.setText(selectedTaskItem.getDescription());
-//        priority.setSelection(selectedTaskItem.getPriority());
-
 
         priority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -117,15 +126,6 @@ public class EditTaskActivity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                TaskItem task =  new TaskItem(TaskTitle.getText().toString(),TaskDiscription.getText().toString(),null,priorityId,0,null);
-//                selectedTaskItem.setTitle(TaskTitle.getText().toString());
-//                selectedTaskItem.setDescription(TaskDiscription.getText().toString());
-//                selectedTaskItem.setPriority(priorityId);
-//                selectedTaskItem.setDeadline(null);
-//                selectedTaskItem.setDuration(0);
-//                Intent intent = new Intent(getApplicationContext(),ItemsActivity.class);
-//                intent.putExtra("Edited Task",task);
-//                setResult(RESULT_OK, intent);
                 if(TaskTitle.getText().toString().isEmpty())
                     Toast.makeText(getApplicationContext(),"No Title written, Please go set a title",Toast.LENGTH_SHORT).show();
                 if(TaskDiscription.getText().toString().isEmpty())
@@ -142,7 +142,24 @@ public class EditTaskActivity extends AppCompatActivity {
     }
 
 
-    public void finished(){
+    public void finished() {
+        String taskTitle = TaskTitle.getText().toString().trim();
+        String taskDescription = TaskDiscription.getText().toString().trim();
+        String creationDate = stf.format(new Date());
+        int priorityVal = priorityId + 1;
+        String duration = TimePicked.getText().toString();
+        String deadline = DatePicked.getText().toString();
+
+        if(intentTag.equalsIgnoreCase("create")) {
+            dbh.insertTaskItem(intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline);
+        } else {
+            String oldTitle = getIntent().getStringExtra("OLD");
+            dbh.updateCheckListItem(oldTitle, intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline, 0);
+        }
+
+        Intent intent = new Intent(this, ItemsActivity.class);
+        startActivity(intent);
+
         finish();
     }
 

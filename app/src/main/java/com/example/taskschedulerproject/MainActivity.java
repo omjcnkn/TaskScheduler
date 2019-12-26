@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 /* Showing last items */
                 rvLists.scrollToPosition(adapter.getItemCount() - 1);
 
-                listNameEditText.setText("");
+                listNameEditText.setText("" );
             }
         });
     }

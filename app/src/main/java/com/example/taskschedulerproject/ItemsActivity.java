@@ -93,26 +93,16 @@ public class ItemsActivity extends AppCompatActivity {
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                try {
-//                    if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-//                        dbh.insertTaskItem(currentListName, "New Task", "New Task", "25/12", 3, "30:00", "25/12");
-//                        Cursor cursor = dbh.getCheckListItems(currentListName);
-//                        adapter.swapCursor(cursor);
-//                    } else if(currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
-//                        dbh.insertNoteItem(currentListName, "New Note", "new Note", "25/12");
-//                        Cursor cursor = dbh.getNoteListItems(currentListName);
-//                        adapter.swapCursor(cursor);
-//                    }
-//                } catch(SQLException ex) {
-//                    Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-//                }
-
                 if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
                     Intent intent = new Intent(ItemsActivity.this, EditTaskActivity.class);
                     intent.putExtra("MODE", "create");
                     intent.putExtra("LIST", currentListName);
                     startActivityForResult(intent, 1);
                 } else if (currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
+                    Intent intent = new Intent(ItemsActivity.this, EditNoteActivity.class);
+                    intent.putExtra("MODE", "create");
+                    intent.putExtra("LIST", currentListName);
+                    startActivityForResult(intent, 1);
                 }
             }
         });
@@ -225,6 +215,12 @@ public class ItemsActivity extends AppCompatActivity {
                     editTaskIntent.putExtra("LIST", currentListName);
                     editTaskIntent.putExtra("OLD", itemNameTextView.getText().toString());
                     startActivityForResult(editTaskIntent, 1);
+                } else {
+                    Intent editNoteIntent = new Intent(ItemsActivity.this, EditNoteActivity.class);
+                    editNoteIntent.putExtra("MODE", "edit");
+                    editNoteIntent.putExtra("LIST", currentListName);
+                    editNoteIntent.putExtra("OLD", itemNameTextView.getText().toString());
+                    startActivityForResult(editNoteIntent, 1);
                 }
                 return true;
             }

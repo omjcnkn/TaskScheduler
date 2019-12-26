@@ -201,7 +201,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getNoteItem(String noteTitle) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE TaskTitle='" + noteTitle + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE NoteTitle='" + noteTitle + "'", null);
 
         return res;
     }

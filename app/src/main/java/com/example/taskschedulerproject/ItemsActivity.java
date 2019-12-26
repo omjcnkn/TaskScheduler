@@ -204,7 +204,9 @@ public class ItemsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-//
+                Intent intent = new Intent(ItemsActivity.this, TaskProgressActivity.class);
+                intent.putExtra("TASK_NAME", itemNameTextView.getText().toString());
+                startActivity(intent);
             }
 
             @Override

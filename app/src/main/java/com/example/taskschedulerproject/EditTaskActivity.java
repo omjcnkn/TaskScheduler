@@ -95,10 +95,20 @@ public class EditTaskActivity extends AppCompatActivity {
                 int mMins = c.get(Calendar.MINUTE);
                 MyHour = mHours;
                 MyMin = mMins;
+
                 tpd = new TimePickerDialog(EditTaskActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hours, int mins) {
-                        TimePicked.setText(hours+":"+mins);
+                        String hoursString = hours + "";
+                        if(hours < 10) {
+                            hoursString = "0" + hoursString;
+                        }
+
+                        String minsString = mins + "";
+                        if(mins < 10) {
+                            minsString = "0" + minsString;
+                        }
+                        TimePicked.setText(hoursString+":"+minsString);
                     }
                 },mHours,mMins,true);
                 tpd.show();

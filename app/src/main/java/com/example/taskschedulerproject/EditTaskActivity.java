@@ -40,7 +40,7 @@ public class EditTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
 
-        selectedTaskItem = (TaskItem) getIntent().getSerializableExtra("SELECTEDTASK");
+//        selectedTaskItem = (TaskItem) getIntent().getSerializableExtra("SELECTEDTASK");
 
         priority = findViewById(R.id.PrioritySpinner);
         DatePicked = findViewById(R.id.dateEditText);
@@ -57,9 +57,9 @@ public class EditTaskActivity extends AppCompatActivity {
         priority.setAdapter(adapter);
 
 
-        TaskTitle.setText(selectedTaskItem.getTitle());
-        TaskDiscription.setText(selectedTaskItem.getDescription());
-        priority.setSelection(selectedTaskItem.getPriority());
+//        TaskTitle.setText(selectedTaskItem.getTitle());
+//        TaskDiscription.setText(selectedTaskItem.getDescription());
+//        priority.setSelection(selectedTaskItem.getPriority());
 
 
         priority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -80,7 +80,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 int day= c.get(Calendar.DAY_OF_MONTH);
                 int month = c.get(Calendar.MONTH);
                 int year = c.get(Calendar.YEAR);
-                dpd = new DatePickerDialog(EditTaskActivity.this, new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(EditTaskActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int ChoosedYear, int ChoosedMonth, int ChoosedDay) {
                         MyDay=ChoosedDay;
@@ -88,7 +88,7 @@ public class EditTaskActivity extends AppCompatActivity {
                         MyYear = ChoosedYear;
                         DatePicked.setText(ChoosedDay +"/"+ChoosedMonth+"/"+ChoosedYear);
                     }
-                },day,month,year);
+                },year,month,day).show();
 
 
 

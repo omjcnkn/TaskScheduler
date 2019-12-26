@@ -201,9 +201,9 @@ public class ItemsActivity extends AppCompatActivity {
 //
 //                if(item instanceof TaskItem) {
 //                    TaskItem taskItem = (TaskItem) item;
-//                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
 //                    editTaskIntent.putExtra("SELECTEDTASK", taskItem);
-//                    startActivityForResult(editTaskIntent, 1);
+                    startActivity(editTaskIntent);
 //                }
             }
 

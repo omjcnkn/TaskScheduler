@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -29,7 +31,8 @@ import java.util.Date;
 
 public class EditTaskActivity extends AppCompatActivity {
     FloatingActionButton finish;
-    EditText TaskTitle,TaskDiscription,DatePicked,TimePicked;
+    EditText TaskTitle,TaskDiscription;
+    TextView DatePicked, TimePicked;
     ImageButton calenderButton,timeButton;
     DatePickerDialog dpd;
     TimePickerDialog tpd;
@@ -139,8 +142,23 @@ public class EditTaskActivity extends AppCompatActivity {
             }
         });
 
+        if(intentTag.equalsIgnoreCase("edit")) {
+            loadInfo();
+        }
+
     }
 
+    private void loadInfo() {
+        String title = getIntent().getStringExtra("OLD");
+        Cursor c = dbh.getTaskItem(title);
+        c.moveToFirst();
+
+        TaskTitle.setText(title);
+        TaskDiscription.setText(c.getString(c.getColumnIndex("TaskDescription")));
+        priority.setSelection(c.getInt(c.getColumnIndex("TaskPriority")) - 1);
+        DatePicked.setText(c.getString(c.getColumnIndex("TaskDeadline")));
+        TimePicked.setText(c.getString(c.getColumnIndex("TaskDuration")));
+    }
 
     public void finished() {
         String taskTitle = TaskTitle.getText().toString().trim();

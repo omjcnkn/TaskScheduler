@@ -151,7 +151,7 @@ public class ItemsActivity extends AppCompatActivity {
         private Context context;
         private Cursor cursor;
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
             public TextView itemNameTextView;
             public TextView itemDueDateTextView;
             public ImageView priorityImageView;
@@ -209,22 +209,25 @@ public class ItemsActivity extends AppCompatActivity {
                 });
 
                 itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
             }
 
             @Override
             public void onClick(View view) {
-//                lastAdapterPosition = getAdapterPosition();
-//                Item item = userSelectedList.getItemByIndex(getAdapterPosition());
 //
-//                if(item instanceof TaskItem) {
-//                    TaskItem taskItem = (TaskItem) item;
-                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
-//                    editTaskIntent.putExtra("SELECTEDTASK", taskItem);
-                    startActivity(editTaskIntent);
-//                }
             }
 
-
+            @Override
+            public boolean onLongClick(View view) {
+                if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+                    editTaskIntent.putExtra("MODE", "edit");
+                    editTaskIntent.putExtra("LIST", currentListName);
+                    editTaskIntent.putExtra("OLD", itemNameTextView.getText().toString());
+                    startActivityForResult(editTaskIntent, 1);
+                }
+                return true;
+            }
         }
 
         public ItemsAdapter(Context context, Cursor cursor) {

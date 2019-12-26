@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbh;
 
     private SimpleDateFormat stf;
+
+    private boolean newList = true;
+    private String selectedList = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,12 +109,25 @@ public class MainActivity extends AppCompatActivity {
         addNewListFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* Inserting in the db */
                 try {
-                    if(checkListImageButton.getTag().toString().equalsIgnoreCase("0")) {
-                        dbh.insertCheckList(listNameEditText.getText().toString(), stf.format(new Date()));
+                    /* Editting selected list */
+                    if(newList == false) {
+                        if(checkListImageButton.getTag().toString().equalsIgnoreCase("0")) {
+                            dbh.updateCheckList(selectedList, listNameEditText.getText().toString(), stf.format(new Date()));
+                        } else {
+                            dbh.updateNoteList(selectedList, listNameEditText.getText().toString(), stf.format(new Date()));
+                        }
+
+                        newList = true;
+                        selectedList = "";
                     } else {
-                        dbh.insertNotesList(listNameEditText.getText().toString(), stf.format(new Date()));
+
+                        /* Inserting in the db */
+                        if (checkListImageButton.getTag().toString().equalsIgnoreCase("0")) {
+                            dbh.insertCheckList(listNameEditText.getText().toString(), stf.format(new Date()));
+                        } else {
+                            dbh.insertNotesList(listNameEditText.getText().toString(), stf.format(new Date()));
+                        }
                     }
 
                     Cursor c = dbh.getAllLists();
@@ -131,8 +145,15 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Showing last items */
                 rvLists.scrollToPosition(adapter.getItemCount() - 1);
+
+                listNameEditText.setText("");
             }
         });
+    }
+
+    public void updateIsNewList(String listName) {
+        newList = false;
+        selectedList = listName;
     }
 
     public void deleteSelectedList(String listName) {
@@ -145,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         private Context context;
         private Cursor cursor;
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
             public TextView listNameTextView, creationDateTextView;
             public ImageView deleteImageButton, listTypeImageView;
 
@@ -166,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
             }
 
             @Override
@@ -177,6 +199,25 @@ public class MainActivity extends AppCompatActivity {
                 selectedListIntent.putExtra("ListName", listName);
                 selectedListIntent.putExtra("ListType", listType);
                 startActivity(selectedListIntent);
+            }
+
+            @Override
+            public boolean onLongClick(View v) {
+                String selected = listNameTextView.getText().toString();
+                Cursor c = dbh.getList(selected);
+                c.moveToFirst();
+
+                listNameEditText.setText(c.getString(c.getColumnIndex("ListName")));
+                if(c.getString(c.getColumnIndex("ListType")).equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    checkListImageButton.setImageResource(R.drawable.checklist);
+                    checkListImageButton.setTag("0");
+                } else {
+                    checkListImageButton.setImageResource(R.drawable.noteslist);
+                    checkListImageButton.setTag("1");
+                }
+
+                updateIsNewList(selected);
+                return true;
             }
         }
 

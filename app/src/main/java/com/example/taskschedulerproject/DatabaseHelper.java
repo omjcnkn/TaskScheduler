@@ -107,7 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateCheckList(Integer id, String title, String date) throws SQLException {
+    public boolean updateCheckList(String oldTitle, String title, String date) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -115,12 +115,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("CreationDate", date);
         contentValues.put("ListType", CHECK_LIST_TYPE);
 
-        db.update(MAIN_BOARD_NAME, contentValues, "id = ? ", new String[] {Integer.toString(id)});
+        db.update(MAIN_BOARD_NAME, contentValues, "ListName ='" + oldTitle + "'", null);
 
         return true;
     }
 
-    public boolean updateNoteList(Integer id, String title, String date) throws SQLException {
+    public boolean updateNoteList(String oldTitle, String title, String date) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -128,7 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("CreationDate", date);
         contentValues.put("ListType", NOTES_LIST_TYPE);
 
-        db.update(MAIN_BOARD_NAME, contentValues, "id = ? ", new String[] {Integer.toString(id)});
+        db.update(MAIN_BOARD_NAME, contentValues, "ListName='" + oldTitle + "'", null);
 
         return true;
     }

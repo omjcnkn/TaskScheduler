@@ -31,7 +31,7 @@
         app:layout_constraintVertical_bias="0.254" />
 
     <EditText
-        android:id="@+id/TaskDiscriptionEdittext"
+        android:id="@+id/NoteDiscriptionEdittext"
         android:layout_width="397dp"
         android:layout_height="128dp"
         android:ems="10"
@@ -44,7 +44,7 @@
         app:layout_constraintVertical_bias="0.346" />
 
     <EditText
-        android:id="@+id/TaskTitleEdittext"
+        android:id="@+id/NoteTitleEdittext"
         android:layout_width="318dp"
         android:layout_height="45dp"
         android:ems="10"
@@ -106,7 +106,7 @@
         app:layout_constraintVertical_bias="0.699" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/finishFloatingActionButton"
+        android:id="@+id/NoteFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -119,5 +119,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.937"
         app:srcCompat="@drawable/check_mark" />
+
+    <ImageButton
+        android:id="@+id/timeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tint="#009688"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.101"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.835"
+        app:srcCompat="@android:drawable/ic_menu_recent_history" />
+
+    <EditText
+        android:id="@+id/timeEdittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:editable="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/timeButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/timeButton"
+        app:layout_constraintTop_toTopOf="@+id/timeButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

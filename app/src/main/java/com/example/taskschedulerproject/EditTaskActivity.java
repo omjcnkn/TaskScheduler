@@ -3,18 +3,21 @@ package com.example.taskschedulerproject;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import java.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.ThemedSpinnerAdapter;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -77,20 +80,17 @@ public class EditTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 c = Calendar.getInstance();
-                int day= c.get(Calendar.DAY_OF_MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
                 int month = c.get(Calendar.MONTH);
                 int year = c.get(Calendar.YEAR);
-                new DatePickerDialog(EditTaskActivity.this, new DatePickerDialog.OnDateSetListener() {
+                dpd = new DatePickerDialog(EditTaskActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker datePicker, int ChoosedYear, int ChoosedMonth, int ChoosedDay) {
-                        MyDay=ChoosedDay;
-                        MyMonth = ChoosedMonth;
-                        MyYear = ChoosedYear;
-                        DatePicked.setText(ChoosedDay +"/"+ChoosedMonth+"/"+ChoosedYear);
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        DatePicked.setText(i+"/"+(i1+1)+"/"+i2);
+                        Toast.makeText(EditTaskActivity.this,i+"/"+(i1+1)+"/"+i2,Toast.LENGTH_SHORT).show();
                     }
-                },year,month,day).show();
-
-
+                },year,month,day);
+                dpd.show();
 
             }
         });

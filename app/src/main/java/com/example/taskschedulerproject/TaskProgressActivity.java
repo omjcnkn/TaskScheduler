@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 public class TaskProgressActivity extends AppCompatActivity {
@@ -34,11 +35,18 @@ public class TaskProgressActivity extends AppCompatActivity {
 
         final String taskDuration = c.getString(c.getColumnIndex("TaskDuration"));
         final int taskDurationInMillis = parseDuration(taskDuration);
+        Log.e("Task Duration" , taskDurationInMillis + "");
+        taskProgressBar.setMax(taskDurationInMillis);
+        taskProgressBar.setProgress(taskDurationInMillis);
 
+        /* 100 000 --> 1
+            60 000 --> x
+         */
         countDownTimer = new CountDownTimer(taskDurationInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                taskProgressBar.setProgress(taskProgressBar.getProgress() * 100 - (int)(taskDurationInMillis * 1.0/ 100000) * 100);
+                Log.e("PROGRESS_BAR", ((taskProgressBar.getProgress() * 100) - (int)(taskDurationInMillis * 1.0/ 100000) * 100) + "");
+                taskProgressBar.setProgress(taskProgressBar.getProgress() - 1000);
             }
 
             @Override

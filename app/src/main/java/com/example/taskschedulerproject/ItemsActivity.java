@@ -30,10 +30,10 @@ public class ItemsActivity extends AppCompatActivity {
     private RecyclerView rvItems;
     private FloatingActionButton addNewListItemFab;
 
-    private ItemsAdapter adapter;
-    ArrayList<Item> items;
-
     private DatabaseHelper dbh;
+    private ItemsAdapter adapter;
+
+    private UserBoard userBoard;
 
     private String currentListName;
     private String currentListType;
@@ -56,8 +56,7 @@ public class ItemsActivity extends AppCompatActivity {
         currentListName = getIntent().getStringExtra("ListName");
         currentListType = getIntent().getStringExtra("ListType");
 
-        Log.e("List_Name ", currentListName);
-        Log.e("List_Type ", currentListType);
+        userBoard = UserBoard.getUserBoard(getApplicationContext());
     }
 
     private void initUI() {
@@ -182,9 +181,11 @@ public class ItemsActivity extends AppCompatActivity {
                             if(checked == 0) {
                                 checked = 1;
                                 itemView.setEnabled(false);
+                                userBoard.incrementPoints();
                             } else {
                                 checked = 0;
                                 itemView.setEnabled(true);
+                                userBoard.decrementPoints();
                             }
 
                             dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,

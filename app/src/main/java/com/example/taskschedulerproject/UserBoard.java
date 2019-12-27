@@ -1,44 +1,64 @@
 package com.example.taskschedulerproject;
 
-import java.util.ArrayList;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-public class UserBoard {
+public class UserBoard extends Subject {
+    private static UserBoard userBoard;
+
     private String username;
-    private ArrayList<ItemList> lists;
-    private int level;
-    private int points;
 
-    public UserBoard(String username) {
-        this.username = username;
-        lists = new ArrayList<>();
+    private int level = 1;
+    private int points = 0;
+
+    private String badge = "";
+
+    private Context appContext;
+    private SharedPreferences sharedPreferences;
+
+    public static final String AppPREFERNCE = "app";
+    public static final String Username = "username";
+    public static final String USER_LEVEL = "level";
+    public static final String USER_POINTS = "points";
+
+    private UserBoard(Context context) {
+        this.appContext = context;
+        sharedPreferences = appContext.getSharedPreferences(AppPREFERNCE, Context.MODE_PRIVATE);
+
+        sharedPreferences = context.getSharedPreferences(AppPREFERNCE, Context.MODE_PRIVATE);
+        username = sharedPreferences.getString(Username, null);
+        level = sharedPreferences.getInt(USER_LEVEL, 1);
+        points = sharedPreferences.getInt(USER_POINTS, 0);
     }
 
-    public void createNewNotesList(String listTitle) {
-        lists.add(new NotesList(listTitle));
+    public String getUsername() {
+        return username;
     }
 
-    public void createNewCheckList(String listTitle) {
-        lists.add(new CheckList(listTitle));
-    }
+    public void setUsername(String mUsername) {
+        this.username = mUsername;
 
-    public void removeList(ItemList list) {
-        lists.remove(list);
-    }
-
-    public void removeListByIndex(int index) {
-        lists.remove(index);
-    }
-
-    public ItemList getListByIndex(int index) {
-        return lists.get(index);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Username, username);
+        editor.commit();
     }
 
     public void incrementPoints() {
         points++;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(USER_POINTS, points);
+        editor.commit();
+
+        notifyAllObservers();
     }
 
     public void decrementPoints() {
         points--;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(USER_POINTS, points);
+        editor.commit();
+
+        notifyAllObservers();
     }
 
     public int getPoints() {
@@ -51,9 +71,26 @@ public class UserBoard {
 
     public void setLevel(int level) {
         this.level = level;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(USER_LEVEL, points);
+        editor.commit();
+
+        notifyAllObservers();
     }
 
-    public ArrayList<ItemList> getLists() {
-        return lists;
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public static UserBoard getUserBoard(Context context) {
+        if(userBoard == null) {
+            userBoard = new UserBoard(context);
+        }
+
+        return userBoard;
     }
 }

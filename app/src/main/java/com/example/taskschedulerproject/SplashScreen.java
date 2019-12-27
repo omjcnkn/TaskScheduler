@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,12 +15,12 @@ import android.widget.TextView;
 public class SplashScreen extends AppCompatActivity {
     private final int SPLASH_SCREEN_DELAY = 1000;
 
-    private final String AppPREFERNCE = "app";
-    private final String Username = "username";
-
     private TextView usernameTextView;
     private EditText usernameEditText;
     private Button registerButton;
+
+    private UserBoard userBoard;
+    private RewardingSystem rewardingSystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +28,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         initUI();
+        initLogic();
 
         if(checkIfRegistered()) {
 
@@ -53,25 +52,15 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = usernameEditText.getText().toString();
-                SharedPreferences sharedPreferences = getSharedPreferences(AppPREFERNCE, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(Username, username);
-                editor.commit();
+//                SharedPreferences sharedPreferences = getSharedPreferences(UserBoard.AppPREFERNCE, Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString(UserBoard.Username, username);
+//                editor.commit();
+                userBoard.setUsername(username);
 
                 startMainActivity();
             }
         });
-    }
-
-    private boolean checkIfRegistered() {
-        SharedPreferences sharedPreferences = getSharedPreferences(AppPREFERNCE, Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString(Username, null);
-
-        if(username == null) {
-            return false;
-        }
-
-        return true;
     }
 
     private void showUI() {
@@ -81,6 +70,23 @@ public class SplashScreen extends AppCompatActivity {
 
         usernameEditText.setEnabled(true);
         registerButton.setEnabled(true);
+    }
+
+    private void initLogic() {
+        userBoard = UserBoard.getUserBoard(getApplicationContext());
+        rewardingSystem = RewardingSystem.getRewardingSystem(userBoard);
+    }
+
+    private boolean checkIfRegistered() {
+//        SharedPreferences sharedPreferences = getSharedPreferences(UserBoard.AppPREFERNCE, Context.MODE_PRIVATE);
+//        String username = sharedPreferences.getString(UserBoard.Username, null);
+        String username = userBoard.getUsername();
+
+        if(username == null) {
+            return false;
+        }
+
+        return true;
     }
 
     private void startMainActivity() {

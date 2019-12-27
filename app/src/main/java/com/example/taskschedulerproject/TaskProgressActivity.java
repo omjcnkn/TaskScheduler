@@ -159,6 +159,8 @@ public class TaskProgressActivity extends AppCompatActivity {
             dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,
                     creationDate, priority, duration, deadline, checked);
 
+            UserBoard.getUserBoard(getApplicationContext()).incrementPoints();
+
             setResult(RESULT_OK);
         } catch(SQLException ex) {
             Toast.makeText(TaskProgressActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();

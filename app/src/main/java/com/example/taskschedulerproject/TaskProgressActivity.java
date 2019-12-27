@@ -95,8 +95,7 @@ public class TaskProgressActivity extends AppCompatActivity {
             public void onClick(View v) {
                 updateTask();
 
-                Intent intent = new Intent(TaskProgressActivity.this, ItemsActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }
@@ -159,8 +158,11 @@ public class TaskProgressActivity extends AppCompatActivity {
 
             dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,
                     creationDate, priority, duration, deadline, checked);
+
+            setResult(RESULT_OK);
         } catch(SQLException ex) {
             Toast.makeText(TaskProgressActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            setResult(RESULT_CANCELED);
         }
     }
 }

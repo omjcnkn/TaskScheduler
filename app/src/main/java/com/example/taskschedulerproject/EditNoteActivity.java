@@ -81,12 +81,12 @@ public class EditNoteActivity extends AppCompatActivity {
                 dbh.updateNoteListItem(getIntent().getStringExtra("OLD"), intentListName,
                         title, description, stf.format(new Date()));
             }
+
+            setResult(RESULT_OK);
         } catch(SQLException ex) {
             Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            setResult(RESULT_CANCELED);
         }
-
-        Intent intent = new Intent(this, ItemsActivity.class);
-        startActivity(intent);
 
         finish();
     }

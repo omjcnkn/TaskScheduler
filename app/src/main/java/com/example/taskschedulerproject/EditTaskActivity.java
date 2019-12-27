@@ -186,12 +186,12 @@ public class EditTaskActivity extends AppCompatActivity {
                 String oldTitle = getIntent().getStringExtra("OLD");
                 dbh.updateCheckListItem(oldTitle, intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline, 0);
             }
+
+            setResult(RESULT_OK);
         } catch(SQLException ex) {
             Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            setResult(RESULT_CANCELED);
         }
-
-        Intent intent = new Intent(this, ItemsActivity.class);
-        startActivity(intent);
 
         finish();
     }

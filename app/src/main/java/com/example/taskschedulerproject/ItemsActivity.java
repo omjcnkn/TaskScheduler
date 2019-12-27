@@ -133,6 +133,11 @@ public class ItemsActivity extends AppCompatActivity {
                     adapter.swapCursor(c);
                 }
             }
+        } else if(requestCode == 2) {
+            if(resultCode == RESULT_OK) {
+                Cursor c = dbh.getCheckListItems(currentListName);
+                adapter.swapCursor(c);
+            }
         }
     }
 
@@ -176,8 +181,10 @@ public class ItemsActivity extends AppCompatActivity {
 
                             if(checked == 0) {
                                 checked = 1;
+                                itemView.setEnabled(false);
                             } else {
                                 checked = 0;
+                                itemView.setEnabled(true);
                             }
 
                             dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,
@@ -206,7 +213,7 @@ public class ItemsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ItemsActivity.this, TaskProgressActivity.class);
                 intent.putExtra("TASK_NAME", itemNameTextView.getText().toString());
-                startActivity(intent);
+                startActivityForResult(intent, 2);
             }
 
             @Override
@@ -297,9 +304,11 @@ public class ItemsActivity extends AppCompatActivity {
             if(cursor.getString(cursor.getColumnIndex("TaskChecked")).equalsIgnoreCase("1")) {
                 holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() |
                         Paint.STRIKE_THRU_TEXT_FLAG);
+                holder.itemView.setEnabled(false);
             } else {
                 holder.itemNameTextView.setPaintFlags(holder.itemNameTextView.getPaintFlags() &
                         (~Paint.STRIKE_THRU_TEXT_FLAG));
+                holder.itemView.setEnabled(true);
             }
         }
 

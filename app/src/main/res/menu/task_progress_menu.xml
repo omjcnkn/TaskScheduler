@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/checkMenuItem"
+        android:icon="@drawable/check_mark"
+        android:title="@string/check_menu_item"
+        app:showAsAction="always"></item>
+
+</menu>

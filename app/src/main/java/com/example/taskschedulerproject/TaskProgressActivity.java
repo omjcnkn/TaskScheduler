@@ -1,16 +1,28 @@
 package com.example.taskschedulerproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class TaskProgressActivity extends AppCompatActivity {
     private ProgressBar taskProgressBar;
+    private FloatingActionButton doneFloatingActionButton;
 
     private DatabaseHelper dbh;
 
@@ -19,6 +31,8 @@ public class TaskProgressActivity extends AppCompatActivity {
     private String currentTaskName;
 
     private TextView timer;
+
+    private Cursor taskCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +53,13 @@ public class TaskProgressActivity extends AppCompatActivity {
         dbh = new DatabaseHelper(getApplicationContext());
 
         currentTaskName = getIntent().getStringExtra("TASK_NAME");
-        Cursor c = dbh.getTaskItem(currentTaskName);
-        c.moveToFirst();
 
-        final String taskDuration = c.getString(c.getColumnIndex("TaskDuration"));
+        getSupportActionBar().setTitle(currentTaskName);
+
+        taskCursor = dbh.getTaskItem(currentTaskName);
+        taskCursor.moveToFirst();
+
+        final String taskDuration = taskCursor.getString(taskCursor.getColumnIndex("TaskDuration"));
         final int taskDurationInMillis = parseDuration(taskDuration);
         Log.e("Task Duration", taskDurationInMillis + "");
         taskProgressBar.setMax(taskDurationInMillis);
@@ -63,7 +80,7 @@ public class TaskProgressActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-
+                finishUI();
             }
         }.start();
     }
@@ -71,6 +88,17 @@ public class TaskProgressActivity extends AppCompatActivity {
     private void initUI() {
         taskProgressBar = findViewById(R.id.taskProgressBar);
         timer = findViewById(R.id.timerTextView);
+        doneFloatingActionButton = findViewById(R.id.doneFloatingActionButton);
+
+        doneFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateTask();
+
+                Intent intent = new Intent(TaskProgressActivity.this, ItemsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private int parseDuration(String duration) {
@@ -111,6 +139,28 @@ public class TaskProgressActivity extends AppCompatActivity {
 
 
         return hrsString + ":" + minsString + ":" + secsString;
+    }
 
+    private void finishUI () {
+        taskProgressBar.setProgress(0);
+        timer.setText("00:00:00");
+    }
+
+    private void updateTask() {
+        try {
+            String listName = taskCursor.getString(taskCursor.getColumnIndex("List"));
+            String checkListName = taskCursor.getString(taskCursor.getColumnIndex("TaskTitle"));
+            String checkListDescription = taskCursor.getString(taskCursor.getColumnIndex("TaskDescription"));
+            String creationDate = taskCursor.getString(taskCursor.getColumnIndex("TaskDate"));
+            int priority = taskCursor.getInt(taskCursor.getColumnIndex("TaskPriority"));
+            String duration = taskCursor.getString(taskCursor.getColumnIndex("TaskDuration"));
+            String deadline = taskCursor.getString(taskCursor.getColumnIndex("TaskDeadline"));
+            int checked = 1;
+
+            dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,
+                    creationDate, priority, duration, deadline, checked);
+        } catch(SQLException ex) {
+            Toast.makeText(TaskProgressActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

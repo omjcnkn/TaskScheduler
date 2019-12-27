@@ -280,13 +280,13 @@ public class ItemsActivity extends AppCompatActivity {
             int priority = Integer.parseInt(cursor.getString(cursor.getColumnIndex("TaskPriority")));
 
             switch(priority) {
-                case 1:
+                case 3:
                     holder.priorityImageView.setImageResource(R.drawable.high_priority);
                     break;
                 case 2:
                     holder.priorityImageView.setImageResource(R.drawable.medium_priority);
                     break;
-                case 3:
+                case 1:
                     holder.priorityImageView.setImageResource(R.drawable.low_priority);
                     break;
             }

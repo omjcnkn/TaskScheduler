@@ -73,6 +73,7 @@ public class EditNoteActivity extends AppCompatActivity {
     public void finished() {
         String title = titleEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
+
         try {
             if (intentTag.equalsIgnoreCase("create")) {
                 dbh.insertNoteItem(intentListName, title, description, stf.format(new Date()));

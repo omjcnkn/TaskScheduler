@@ -26,6 +26,12 @@ public class TaskProgressActivity extends AppCompatActivity {
         initLogic();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        countDownTimer.cancel();
+    }
+
     private void initLogic() {
         dbh = new DatabaseHelper(getApplicationContext());
 

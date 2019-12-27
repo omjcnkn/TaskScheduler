@@ -46,6 +46,7 @@
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
             android:inputType="textPersonName"
+            android:maxLength="20"
             android:paddingLeft="3dp"
             android:paddingRight="3dp" />
 

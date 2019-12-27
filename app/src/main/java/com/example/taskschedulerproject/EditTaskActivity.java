@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -178,11 +179,15 @@ public class EditTaskActivity extends AppCompatActivity {
         String duration = TimePicked.getText().toString();
         String deadline = DatePicked.getText().toString();
 
-        if(intentTag.equalsIgnoreCase("create")) {
-            dbh.insertTaskItem(intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline);
-        } else {
-            String oldTitle = getIntent().getStringExtra("OLD");
-            dbh.updateCheckListItem(oldTitle, intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline, 0);
+        try {
+            if (intentTag.equalsIgnoreCase("create")) {
+                dbh.insertTaskItem(intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline);
+            } else {
+                String oldTitle = getIntent().getStringExtra("OLD");
+                dbh.updateCheckListItem(oldTitle, intentListName, taskTitle, taskDescription, creationDate, priorityVal, duration, deadline, 0);
+            }
+        } catch(SQLException ex) {
+            Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         Intent intent = new Intent(this, ItemsActivity.class);

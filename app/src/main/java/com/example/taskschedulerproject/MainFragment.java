@@ -62,9 +62,6 @@ public class MainFragment extends Fragment {
 
     private void createDataBase(){
         dbh = new DatabaseHelper(getActivity().getApplicationContext());
-
-        dbh.deleteAllNoteItems();
-        dbh.deleteAllTaskItems();
     }
 
     private void initLogic() {

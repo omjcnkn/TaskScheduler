@@ -29,6 +29,18 @@ public class RewardingSystem implements TaskObserver {
         Log.e("LEVEL", currentLevel + "");
     }
 
+    public void rewardCheckingTask(int priority) {
+        userBoard.incrementPoints(priority);
+    }
+
+    public void unRewardCheckingTask(int priority) {
+        userBoard.decrementPoints(priority);
+    }
+
+    public void setUserLevel() {
+
+    }
+
     public static RewardingSystem getRewardingSystem(UserBoard userBoard) {
         if(rewardingSystem == null) {
             rewardingSystem = new RewardingSystem(userBoard);

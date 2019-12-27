@@ -43,8 +43,8 @@ public class UserBoard extends Subject {
         editor.commit();
     }
 
-    public void incrementPoints() {
-        points++;
+    public void incrementPoints(int increments) {
+        points += increments;
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(USER_POINTS, points);
         editor.commit();
@@ -52,8 +52,8 @@ public class UserBoard extends Subject {
         notifyAllObservers();
     }
 
-    public void decrementPoints() {
-        points--;
+    public void decrementPoints(int decrements) {
+        points -= decrements;
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(USER_POINTS, points);
         editor.commit();

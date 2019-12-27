@@ -181,11 +181,12 @@ public class ItemsActivity extends AppCompatActivity {
                             if(checked == 0) {
                                 checked = 1;
                                 itemView.setEnabled(false);
-                                userBoard.incrementPoints();
+                                RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext())).rewardCheckingTask(priority);
                             } else {
                                 checked = 0;
                                 itemView.setEnabled(true);
-                                userBoard.decrementPoints();
+                                RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext())).unRewardCheckingTask(priority);
+
                             }
 
                             dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,

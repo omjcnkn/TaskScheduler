@@ -21,6 +21,7 @@ public class UserBoard extends Subject {
     public static final String USER_LEVEL = "level";
     public static final String USER_POINTS = "points";
 
+
     private UserBoard(Context context) {
         this.appContext = context;
         sharedPreferences = appContext.getSharedPreferences(AppPREFERNCE, Context.MODE_PRIVATE);
@@ -69,6 +70,7 @@ public class UserBoard extends Subject {
         return level;
     }
 
+
     public void setLevel(int level) {
         this.level = level;
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -76,6 +78,13 @@ public class UserBoard extends Subject {
         editor.commit();
 
         notifyAllObservers();
+    }
+
+    public void setPoints(int points){
+        this.points = points;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(USER_POINTS, points);
+        editor.commit();
     }
 
     public void setBadge(String badge) {

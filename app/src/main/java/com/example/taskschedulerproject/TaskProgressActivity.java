@@ -159,7 +159,7 @@ public class TaskProgressActivity extends AppCompatActivity {
             dbh.updateCheckListItem(checkListName, listName, checkListName, checkListDescription,
                     creationDate, priority, duration, deadline, checked);
 
-            RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext())).rewardCheckingTask(priority);
+            RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext()) , getApplicationContext()).rewardCheckingTask(priority);
 
             setResult(RESULT_OK);
         } catch(SQLException ex) {

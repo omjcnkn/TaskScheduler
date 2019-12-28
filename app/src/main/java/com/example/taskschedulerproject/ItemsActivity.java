@@ -181,11 +181,11 @@ public class ItemsActivity extends AppCompatActivity {
                             if(checked == 0) {
                                 checked = 1;
                                 itemView.setEnabled(false);
-                                RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext())).rewardCheckingTask(priority);
+                                RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext()), getApplicationContext()).rewardCheckingTask(priority);
                             } else {
                                 checked = 0;
                                 itemView.setEnabled(true);
-                                RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext())).unRewardCheckingTask(priority);
+                                RewardingSystem.getRewardingSystem(UserBoard.getUserBoard(getApplicationContext()) , getApplicationContext()).unRewardCheckingTask(priority);
 
                             }
 

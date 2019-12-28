@@ -74,7 +74,7 @@ public class SplashScreen extends AppCompatActivity {
 
     private void initLogic() {
         userBoard = UserBoard.getUserBoard(getApplicationContext());
-        rewardingSystem = RewardingSystem.getRewardingSystem(userBoard);
+        rewardingSystem = RewardingSystem.getRewardingSystem(userBoard , getApplicationContext());
     }
 
     private boolean checkIfRegistered() {

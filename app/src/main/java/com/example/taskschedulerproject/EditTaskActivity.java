@@ -144,11 +144,11 @@ public class EditTaskActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"No Title written, Please go set a title",Toast.LENGTH_SHORT).show();
                 if(TaskDiscription.getText().toString().isEmpty())
                     Toast.makeText(getApplicationContext(),"No Descrtption written, Please go set a descritpion",Toast.LENGTH_SHORT).show();
-                if(MyMonth == -1)
+                if(DatePicked.getText().toString().isEmpty())
                     Toast.makeText(getApplicationContext(),"No Date Picked, Please go set a date.",Toast.LENGTH_SHORT).show();
-                if(MyMin == -1)
+                if(TimePicked.getText().toString().isEmpty())
                     Toast.makeText(getApplicationContext(),"No Time Picked, Please go set a time.",Toast.LENGTH_SHORT).show();
-                if(MyMonth != -1 && MyMin != -1 && !TaskTitle.getText().toString().isEmpty() && !TaskDiscription.getText().toString().isEmpty())
+                if(!DatePicked.getText().toString().isEmpty() && !TimePicked.getText().toString().isEmpty() && !TaskTitle.getText().toString().isEmpty() && !TaskDiscription.getText().toString().isEmpty())
                     finished();
             }
         });

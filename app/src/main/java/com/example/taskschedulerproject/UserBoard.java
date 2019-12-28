@@ -42,6 +42,8 @@ public class UserBoard extends Subject {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Username, username);
         editor.commit();
+
+        notifyAllObservers();
     }
 
     public void incrementPoints(int increments) {
@@ -80,15 +82,10 @@ public class UserBoard extends Subject {
         notifyAllObservers();
     }
 
-    public void setPoints(int points){
-        this.points = points;
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(USER_POINTS, points);
-        editor.commit();
-    }
-
     public void setBadge(String badge) {
         this.badge = badge;
+
+        notifyAllObservers();
     }
 
     public String getBadge() {

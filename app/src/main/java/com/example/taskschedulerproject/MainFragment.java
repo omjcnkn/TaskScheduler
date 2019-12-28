@@ -119,7 +119,7 @@ public class MainFragment extends Fragment {
                     Toast.makeText(getContext(), "You must enter your list name", Toast.LENGTH_LONG).show();
                     return;
                 }
-                
+
                 try {
                     /* Editting selected list */
                     if(newList == false) {

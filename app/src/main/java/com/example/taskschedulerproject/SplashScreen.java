@@ -52,10 +52,6 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = usernameEditText.getText().toString();
-//                SharedPreferences sharedPreferences = getSharedPreferences(UserBoard.AppPREFERNCE, Context.MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString(UserBoard.Username, username);
-//                editor.commit();
                 userBoard.setUsername(username);
 
                 startMainActivity();
@@ -78,8 +74,6 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private boolean checkIfRegistered() {
-//        SharedPreferences sharedPreferences = getSharedPreferences(UserBoard.AppPREFERNCE, Context.MODE_PRIVATE);
-//        String username = sharedPreferences.getString(UserBoard.Username, null);
         String username = userBoard.getUsername();
 
         if(username == null) {

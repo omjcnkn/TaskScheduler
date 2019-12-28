@@ -76,7 +76,7 @@ public class UserBoard extends Subject {
     public void setLevel(int level) {
         this.level = level;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(USER_LEVEL, points);
+        editor.putInt(USER_LEVEL, this.level);
         editor.commit();
 
         notifyAllObservers();

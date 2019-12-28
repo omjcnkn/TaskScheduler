@@ -36,6 +36,8 @@ public class RewardingSystem implements TaskObserver {
         int currentLevel = userBoard.getLevel();
         int levelMaxPoints = getLevelMaxPoints();
 
+        Log.d("LEVEL_MAX_POINTS", levelMaxPoints + "");
+
         if(pointsState == currentPoints) {
             return;
         }
@@ -47,6 +49,7 @@ public class RewardingSystem implements TaskObserver {
             //Update The Rewarding System Level and set the level in the UserBoard itself
             userBoard.setLevel( currentLevel +1 );
             levelState = userBoard.getLevel();
+            Log.d("LEVEL", levelState + "");
 
             //update the maxlevelpoints with the one corresponding to the current updated level
             updateLevelMaxPoints(levelState);

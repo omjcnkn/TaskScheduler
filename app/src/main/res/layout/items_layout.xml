@@ -1,72 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/itemNameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLength="20"
-        android:text="TextView"
-        android:textColor="@color/colorEbonyClay"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/priorityImageView"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/itemDueDateTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textColor="@color/colorEbonyClay"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toEndOf="@+id/priorityImageView"
-        app:layout_constraintTop_toBottomOf="@+id/itemNameTextView" />
+        <TextView
+            android:id="@+id/itemNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="20"
+            android:text="TextView"
+            android:textColor="@color/colorEbonyClay"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toEndOf="@+id/priorityImageView"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/priorityImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tint="@color/colorEbonyClay"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/high_priority" />
+        <TextView
+            android:id="@+id/itemDueDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="@color/colorEbonyClay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toEndOf="@+id/priorityImageView"
+            app:layout_constraintTop_toBottomOf="@+id/itemNameTextView" />
 
-    <ImageView
-        android:id="@+id/checkImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tint="@color/colorPuertoRico"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.799"
-        app:layout_constraintStart_toEndOf="@+id/priorityImageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.509"
-        app:srcCompat="@drawable/check_mark" />
+        <ImageView
+            android:id="@+id/priorityImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorEbonyClay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/high_priority" />
 
-    <ImageView
-        android:id="@+id/deleteImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tint="@color/colorEbonyClay"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/checkImageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/delete_button" />
+        <ImageView
+            android:id="@+id/checkImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorPuertoRico"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.799"
+            app:layout_constraintStart_toEndOf="@+id/priorityImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.509"
+            app:srcCompat="@drawable/check_mark" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/deleteImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorEbonyClay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/checkImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/delete_button" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

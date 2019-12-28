@@ -33,6 +33,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:maxLength="20"
+        android:padding="3dp"
         android:textColor="@color/colorGallery"
         android:textCursorDrawable="@null"
         android:textSize="20sp"

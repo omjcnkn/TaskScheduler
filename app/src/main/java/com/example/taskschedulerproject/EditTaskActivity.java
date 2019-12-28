@@ -13,6 +13,8 @@ import java.util.Calendar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,6 +62,8 @@ public class EditTaskActivity extends AppCompatActivity {
 
         intentTag = getIntent().getStringExtra("MODE");
         intentListName = getIntent().getStringExtra("LIST");
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#232931")));
 
         timeButton = findViewById(R.id.timeButton);
         priority = findViewById(R.id.PrioritySpinner);

@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#006E6E6E</color>
     <color name="colorWhite">#FFFFFF</color>
+
+    <color name="colorEbonyClay">#232931</color>
+    <color name="colorBrightGray">#393E46</color>
+    <color name="colorPuertoRico">#4ECCA3</color>
+    <color name="colorGallery">#EEEEEE</color>
 </resources>

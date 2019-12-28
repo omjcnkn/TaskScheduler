@@ -12,7 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,6 +62,8 @@ public class ItemsActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#232931")));
+
         getSupportActionBar().setTitle(currentListName);
 
         rvItems = findViewById(R.id.itemsRecyclerView);

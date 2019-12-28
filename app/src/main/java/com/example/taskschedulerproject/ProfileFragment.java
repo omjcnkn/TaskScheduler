@@ -74,8 +74,8 @@ public class ProfileFragment extends Fragment {
         userBadgeImageView.setImageResource(badge.get(userBoard.getLevel() - 1));
         usernameTextView.setText(userBoard.getUsername());
         usernameEditText.setText(userBoard.getUsername());
-        userPointsTextView.setText("Points : " + userBoard.getPoints());
-        userLevelTextView.setText("Level : " + userBoard.getLevel());
+        userPointsTextView.setText(userBoard.getPoints() + "");
+        userLevelTextView.setText(userBoard.getLevel() + "" );
 
         usernameTextView.setOnClickListener(new View.OnClickListener() {
             @Override

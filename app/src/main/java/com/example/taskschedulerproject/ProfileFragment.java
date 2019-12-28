@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -78,7 +79,7 @@ public class ProfileFragment extends Fragment {
                 usernameEditText.requestFocus();
 
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(usernameEditText, InputMethodManager.SHOW_IMPLICIT);
+                imm.showSoftInput(usernameEditText, InputMethodManager.SHOW_FORCED);
 
                 usernameEditText.setCursorVisible(true);
             }
@@ -87,7 +88,8 @@ public class ProfileFragment extends Fragment {
         usernameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((actionId & EditorInfo.IME_MASK_ACTION) == EditorInfo.IME_ACTION_DONE) {
+                if (((actionId & EditorInfo.IME_MASK_ACTION) == EditorInfo.IME_ACTION_DONE) &&
+                        (!usernameEditText.getText().toString().isEmpty())) {
                     String newUsername = usernameEditText.getText().toString().trim();
 
                     usernameEditText.setVisibility(View.INVISIBLE);
@@ -102,6 +104,16 @@ public class ProfileFragment extends Fragment {
                     return true;
                 }
                 else {
+                    if(usernameEditText.getText().toString().isEmpty()) {
+                        Toast.makeText(getContext(), "Username can't be empty", Toast.LENGTH_SHORT).show();
+                    }
+
+                    usernameEditText.setVisibility(View.INVISIBLE);
+                    usernameEditText.setEnabled(false);
+
+                    usernameTextView.setVisibility(View.VISIBLE);
+                    usernameTextView.setEnabled(true);
+
                     return false;
                 }
             }

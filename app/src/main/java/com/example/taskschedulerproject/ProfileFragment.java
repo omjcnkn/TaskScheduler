@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,6 @@ public class ProfileFragment extends Fragment {
     private EditText usernameEditText;
     private TextView userPointsTextView;
     private TextView userLevelTextView;
-
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -113,6 +113,8 @@ public class ProfileFragment extends Fragment {
 
                     usernameTextView.setVisibility(View.VISIBLE);
                     usernameTextView.setEnabled(true);
+
+                    usernameTextView.setText(userBoard.getUsername());
 
                     return false;
                 }

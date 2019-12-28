@@ -213,9 +213,11 @@ public class ItemsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ItemsActivity.this, TaskProgressActivity.class);
-                intent.putExtra("TASK_NAME", itemNameTextView.getText().toString());
-                startActivityForResult(intent, 2);
+                if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    Intent intent = new Intent(ItemsActivity.this, TaskProgressActivity.class);
+                    intent.putExtra("TASK_NAME", itemNameTextView.getText().toString());
+                    startActivityForResult(intent, 2);
+                }
             }
 
             @Override

@@ -1,11 +1,17 @@
 package com.example.taskschedulerproject;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 public class RewardingSystem implements TaskObserver {
+    private NotificationManagerCompat manager;
     private UserBoard userBoard;
     private static RewardingSystem rewardingSystem;
 
@@ -29,6 +35,8 @@ public class RewardingSystem implements TaskObserver {
         levelState = userBoard.getLevel();
         pointsState = userBoard.getPoints();
         levelMaxPoints = sharedPreferences.getInt(LEVELMAXPOINTS , 10);
+        manager = NotificationManagerCompat.from(appContext);
+
     }
 
     public void onNotify() {
@@ -54,12 +62,23 @@ public class RewardingSystem implements TaskObserver {
             //update the maxlevelpoints with the one corresponding to the current updated level
             updateLevelMaxPoints(levelState);
 
+            Notification notification = new NotificationCompat.Builder(appContext, Notifications.Channel_1_ID)
+                    .setSmallIcon(R.drawable.ic_level_up)
+                    .setContentTitle("Hallelujah!! Level up")
+                    .setContentText("You're now level "+levelState)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setCategory(NotificationCompat.CATEGORY_STATUS)
+                    .build();
+            manager.notify(1,notification);
+
         }
         else
             pointsState = currentPoints;
 
         Log.e("POINTS", currentPoints + "");
         Log.e("LEVEL", currentLevel + "");
+
+
     }
 
     public void rewardCheckingTask(int priority) {

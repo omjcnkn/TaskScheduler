@@ -44,11 +44,13 @@
             android:layout_margin="5dp"
             android:layout_weight="20"
             android:background="@drawable/edit_text_rounded"
+            android:cursorVisible="true"
             android:ems="10"
             android:inputType="textPersonName"
             android:maxLength="20"
             android:paddingLeft="3dp"
-            android:paddingRight="3dp" />
+            android:paddingRight="3dp"
+            android:textCursorDrawable="@null" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addNewListFab"

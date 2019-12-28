@@ -21,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +34,8 @@ public class ProfileFragment extends Fragment {
     private EditText usernameEditText;
     private TextView userPointsTextView;
     private TextView userLevelTextView;
+
+    private ArrayList<Integer> badge;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -48,7 +53,13 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initLogic();
         initUI(view);
+    }
+
+    private void initLogic() {
+        badge = new ArrayList<>(Arrays.asList(R.drawable.b1 , R.drawable.b2 , R.drawable.b3 , R.drawable.b4,
+                R.drawable.b5));
     }
 
     private void initUI(View view) {
@@ -60,7 +71,7 @@ public class ProfileFragment extends Fragment {
 
         final UserBoard userBoard = UserBoard.getUserBoard(getContext());
 
-        setUserBadge(userBoard.getBadge());
+        userBadgeImageView.setImageResource(badge.get(userBoard.getLevel() - 1));
         usernameTextView.setText(userBoard.getUsername());
         usernameEditText.setText(userBoard.getUsername());
         userPointsTextView.setText("Points : " + userBoard.getPoints());
@@ -120,9 +131,5 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void setUserBadge(String badge) {
-
     }
 }

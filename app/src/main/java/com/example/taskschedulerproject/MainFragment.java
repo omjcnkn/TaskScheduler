@@ -115,6 +115,11 @@ public class MainFragment extends Fragment {
         addNewListFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(listNameEditText.getText().toString().isEmpty()) {
+                    Toast.makeText(getContext(), "You must enter your list name", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                
                 try {
                     /* Editting selected list */
                     if(newList == false) {

@@ -51,6 +51,7 @@
             android:maxLength="20"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
+            android:textColor="@color/colorGallery"
             android:textCursorDrawable="@null" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         username.setText(userBoard.getUsername());
         points.setText("Points: " +userBoard.getPoints() + "");
         level.setText("Level: " +userBoard.getLevel() + "");
+        currentbadge.setImageResource( badge.get(userBoard.getLevel()-1));
     }
 
 

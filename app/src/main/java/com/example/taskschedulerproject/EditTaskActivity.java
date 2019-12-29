@@ -154,7 +154,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     b1 = true;
                 }
                 if (TaskDiscription.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Description written, Please go set a dsscri  ption", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No Description written, Please go set a description", Toast.LENGTH_SHORT).show();
                     b2 = false;
                 }
                 else {

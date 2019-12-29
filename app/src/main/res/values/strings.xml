@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TaskSchedulerProject</string>
+    <string name="app_name">Task Scheduler</string>
     <string name="app_title">Task Scheduler App</string>
     <string name="username_text_vew">Enter Your Username</string>
     <string name="register_btn">Register</string>

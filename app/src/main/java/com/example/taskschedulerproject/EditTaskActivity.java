@@ -42,7 +42,7 @@ public class EditTaskActivity extends AppCompatActivity {
     ArrayList<String> priorities;
     ArrayAdapter<String> adapter;
     Spinner priority;
-    Calendar c;
+    Calendar c,choosedCalender;
     int priorityId=0,MyDay=-1,MyMonth=-1,MyYear=-1,MyHour=-1,MyMin=-1;
 
     private DatabaseHelper dbh;
@@ -56,7 +56,7 @@ public class EditTaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
-
+        choosedCalender = Calendar.getInstance();
         dbh = new DatabaseHelper(getApplicationContext());
         stf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
@@ -134,6 +134,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         DatePicked.setText(i+"/"+(i1+1)+"/"+i2);
+                        choosedCalender.set(i,i1,i2);
                     }
                 },year,month,day);
                 dpd.show();
@@ -144,15 +145,46 @@ public class EditTaskActivity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TaskTitle.getText().toString().isEmpty())
-                    Toast.makeText(getApplicationContext(),"No Title written, Please go set a title",Toast.LENGTH_SHORT).show();
-                if(TaskDiscription.getText().toString().isEmpty())
-                    Toast.makeText(getApplicationContext(),"No Descrtption written, Please go set a descritpion",Toast.LENGTH_SHORT).show();
-                if(DatePicked.getText().toString().isEmpty())
-                    Toast.makeText(getApplicationContext(),"No Date Picked, Please go set a date.",Toast.LENGTH_SHORT).show();
-                if(TimePicked.getText().toString().isEmpty())
-                    Toast.makeText(getApplicationContext(),"No Time Picked, Please go set a time.",Toast.LENGTH_SHORT).show();
-                if(!DatePicked.getText().toString().isEmpty() && !TimePicked.getText().toString().isEmpty() && !TaskTitle.getText().toString().isEmpty() && !TaskDiscription.getText().toString().isEmpty())
+                boolean b1 = true, b2 = true, b3 = true, b4 = true, b5 = true;
+                if (TaskTitle.getText().toString().isEmpty()) {
+                    b1 = false;
+                    Toast.makeText(getApplicationContext(), "No Title written, Please go set a title", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    b1 = true;
+                }
+                if (TaskDiscription.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Description written, Please go set a dsscri  ption", Toast.LENGTH_SHORT).show();
+                    b2 = false;
+                }
+                else {
+                    b2 = true;
+                }
+                if (DatePicked.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Date Picked, Please go set a date.", Toast.LENGTH_SHORT).show();
+                    b3 = false;
+                }
+                else{
+                    b3 = true;
+                }
+                if (TimePicked.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Time Picked, Please go set a time.", Toast.LENGTH_SHORT).show();
+                    b4 = false;
+                }
+                else{
+                    b4 = true;
+                }
+                if (choosedCalender.before(c)) {
+                    if (c.get(Calendar.YEAR) != choosedCalender.get(Calendar.YEAR) || c.get(Calendar.MONTH) != choosedCalender.get(Calendar.MONTH) || c.get(Calendar.DAY_OF_MONTH) != choosedCalender.get(Calendar.DAY_OF_MONTH)) {
+                        Toast.makeText(getApplicationContext(), "The picked date is earlier than now, please pick valid date", Toast.LENGTH_SHORT).show();
+                        b5 = false;
+                    }
+                }
+                else{
+                    b5 = true;
+                }
+
+                if (b1 && b2 && b3 && b4 && b5)
                     finished();
             }
         });

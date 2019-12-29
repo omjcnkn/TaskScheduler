@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cardview_shadow_start_color"
     tools:context=".TaskProgressActivity">
 
     <ProgressBar
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:tint="@color/colorWhite"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorPuertoRico"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"

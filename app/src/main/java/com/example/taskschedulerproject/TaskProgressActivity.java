@@ -7,6 +7,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Color;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -86,6 +89,8 @@ public class TaskProgressActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#232931")));
+
         taskProgressBar = findViewById(R.id.taskProgressBar);
         timer = findViewById(R.id.timerTextView);
         doneFloatingActionButton = findViewById(R.id.doneFloatingActionButton);

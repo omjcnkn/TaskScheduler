@@ -87,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/userPointsHolderTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="10dp"
@@ -98,7 +98,7 @@
 
                 <TextView
                     android:id="@+id/userPointsTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="clip_vertical|right"
                     android:layout_weight="1"
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/userLevelHolderTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="clip_vertical"
@@ -137,7 +137,7 @@
 
                 <TextView
                     android:id="@+id/userLevelTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="clip_vertical|left"

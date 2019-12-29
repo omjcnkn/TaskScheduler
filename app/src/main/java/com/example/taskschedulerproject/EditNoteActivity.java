@@ -66,12 +66,16 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     private void loadInfo() {
-        String title = getIntent().getStringExtra("OLD");
-        Cursor c = dbh.getNoteItem(title);
-        c.moveToFirst();
+        try {
+            String title = getIntent().getStringExtra("OLD");
+            Cursor c = dbh.getNoteItem(title);
+            c.moveToFirst();
 
-        titleEditText.setText(title);
-        descriptionEditText.setText(c.getString(c.getColumnIndex("NoteDescription")));
+            titleEditText.setText(title);
+            descriptionEditText.setText(c.getString(c.getColumnIndex("NoteDescription")));
+        } catch(SQLException ex) {
+            Toast.makeText(getApplicationContext(), "Couldn't load selected item info", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void finished() {
@@ -88,7 +92,7 @@ public class EditNoteActivity extends AppCompatActivity {
 
             setResult(RESULT_OK);
         } catch(SQLException ex) {
-            Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Something went wrong, try entering different item name", Toast.LENGTH_LONG).show();
             setResult(RESULT_CANCELED);
         }
 

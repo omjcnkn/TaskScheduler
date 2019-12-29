@@ -95,17 +95,25 @@ public class ItemNoteActivity extends AppCompatActivity {
 
 
     public void deleteSelectedItem(String itemName) {
-        dbh.removeNoteListItem(itemName);
-        Cursor c = dbh.getNoteListItems(currentListName);
-        adapter.swapCursor(c);
+        try {
+            dbh.removeNoteListItem(itemName);
+            Cursor c = dbh.getNoteListItems(currentListName);
+            adapter.swapCursor(c);
+        } catch(SQLException ex) {
+            Toast.makeText(getApplicationContext(), "Couldn't delete item", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1) {
             if(resultCode == RESULT_OK) {
-                Cursor c = dbh.getNoteListItems(currentListName);
-                adapter.swapCursor(c);
+                try {
+                    Cursor c = dbh.getNoteListItems(currentListName);
+                    adapter.swapCursor(c);
+                } catch(SQLException ex) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong, try entering different Note Title", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

@@ -95,22 +95,34 @@ public class ItemsActivity extends AppCompatActivity {
     }
 
     public void deleteSelectedItem(String itemName) {
-        dbh.removeCheckListItem(itemName);
-        Cursor c = dbh.getCheckListItems(currentListName);
-        adapter.swapCursor(c);
+        try {
+            dbh.removeCheckListItem(itemName);
+            Cursor c = dbh.getCheckListItems(currentListName);
+            adapter.swapCursor(c);
+        } catch(SQLException ex) {
+            Toast.makeText(getApplicationContext(), "Couldn't remove item", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1) {
             if(resultCode == RESULT_OK) {
-                Cursor c = dbh.getCheckListItems(currentListName);
-                adapter.swapCursor(c);
+                try {
+                    Cursor c = dbh.getCheckListItems(currentListName);
+                    adapter.swapCursor(c);
+                } catch(SQLException ex) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong, try entering different task name", Toast.LENGTH_LONG).show();
+                }
             }
         } else if(requestCode == 2) {
             if(resultCode == RESULT_OK) {
-                Cursor c = dbh.getCheckListItems(currentListName);
-                adapter.swapCursor(c);
+                try {
+                    Cursor c = dbh.getCheckListItems(currentListName);
+                    adapter.swapCursor(c);
+                } catch(SQLException ex) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong, try entering different task name", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -172,7 +184,7 @@ public class ItemsActivity extends AppCompatActivity {
                             c = dbh.getCheckListItems(currentListName);
                             adapter.swapCursor(c);
                         } catch(SQLException ex) {
-                            Toast.makeText(ItemsActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ItemsActivity.this, "Something went wrong while updating database", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

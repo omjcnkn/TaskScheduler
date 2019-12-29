@@ -164,15 +164,19 @@ public class EditTaskActivity extends AppCompatActivity {
     }
 
     private void loadInfo() {
-        String title = getIntent().getStringExtra("OLD");
-        Cursor c = dbh.getTaskItem(title);
-        c.moveToFirst();
+        try {
+            String title = getIntent().getStringExtra("OLD");
+            Cursor c = dbh.getTaskItem(title);
+            c.moveToFirst();
 
-        TaskTitle.setText(title);
-        TaskDiscription.setText(c.getString(c.getColumnIndex("TaskDescription")));
-        priority.setSelection(c.getInt(c.getColumnIndex("TaskPriority")) - 1);
-        DatePicked.setText(c.getString(c.getColumnIndex("TaskDeadline")));
-        TimePicked.setText(c.getString(c.getColumnIndex("TaskDuration")));
+            TaskTitle.setText(title);
+            TaskDiscription.setText(c.getString(c.getColumnIndex("TaskDescription")));
+            priority.setSelection(c.getInt(c.getColumnIndex("TaskPriority")) - 1);
+            DatePicked.setText(c.getString(c.getColumnIndex("TaskDeadline")));
+            TimePicked.setText(c.getString(c.getColumnIndex("TaskDuration")));
+        } catch(SQLException ex) {
+            Toast.makeText(getApplicationContext(), "Couldn't load selected item info", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void finished() {
@@ -193,7 +197,7 @@ public class EditTaskActivity extends AppCompatActivity {
 
             setResult(RESULT_OK);
         } catch(SQLException ex) {
-            Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Something went wrong, try entering different item name", Toast.LENGTH_LONG).show();
             setResult(RESULT_CANCELED);
         }
 

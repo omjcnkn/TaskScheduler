@@ -168,7 +168,7 @@ public class TaskProgressActivity extends AppCompatActivity {
 
             setResult(RESULT_OK);
         } catch(SQLException ex) {
-            Toast.makeText(TaskProgressActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(TaskProgressActivity.this, "Couldn't update database", Toast.LENGTH_LONG).show();
             setResult(RESULT_CANCELED);
         }
     }

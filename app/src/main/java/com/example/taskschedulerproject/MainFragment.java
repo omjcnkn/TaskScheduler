@@ -145,7 +145,7 @@ public class MainFragment extends Fragment {
                     Cursor c = dbh.getAllLists();
                     adapter.swapCursor(c);
                 } catch(SQLException ex) {
-                    Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Something went wrong, try entering different list name", Toast.LENGTH_LONG).show();
                 }
 
                 /* Hiding keyboard */
@@ -169,9 +169,13 @@ public class MainFragment extends Fragment {
     }
 
     public void deleteSelectedList(String listName) {
-        dbh.removeList(listName);
-        Cursor c = dbh.getAllLists();
-        adapter.swapCursor(c);
+        try {
+            dbh.removeList(listName);
+            Cursor c = dbh.getAllLists();
+            adapter.swapCursor(c);
+        } catch(SQLException ex) {
+            Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -224,7 +228,13 @@ public class MainFragment extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 String selected = listNameTextView.getText().toString();
-                Cursor c = dbh.getList(selected);
+                Cursor c;
+                try {
+                    c = dbh.getList(selected);
+                } catch(SQLException ex) {
+                    Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                    return true;
+                }
                 c.moveToFirst();
 
                 listNameEditText.setText(c.getString(c.getColumnIndex("ListName")));

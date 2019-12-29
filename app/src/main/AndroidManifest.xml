@@ -10,11 +10,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TaskProgressActivity"></activity>
+        <activity android:name=".ItemNoteActivity"></activity>
+        <activity android:name=".TaskProgressActivity" />
         <activity android:name=".EditNoteActivity" />
         <activity android:name=".ItemsActivity" />
         <activity android:name=".EditTaskActivity" />
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SplashScreen"
             android:theme="@style/SplashTheme">

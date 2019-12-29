@@ -5,13 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:layout_margin="5dp"
-    android:background="#F4E6C9"
-    android:orientation="vertical">
+    android:background="@color/colorGallery"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/colorGallery">
+
+    <FrameLayout
+        android:id="@+id/priorityIndicator"
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_red_dark">
+
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="#F4E6C9"
         android:orientation="vertical">
 
         <TextView

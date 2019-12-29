@@ -7,7 +7,7 @@
     android:background="@color/colorBrightGray">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/itemsRecyclerView"
+        android:id="@+id/itemsNoteRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addNewTaskActionButton"
+        android:id="@+id/addNewNoteActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"

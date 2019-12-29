@@ -16,17 +16,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
 
 public class ItemsActivity extends AppCompatActivity {
     private RecyclerView rvItems;
@@ -34,8 +32,6 @@ public class ItemsActivity extends AppCompatActivity {
 
     private DatabaseHelper dbh;
     private ItemsAdapter adapter;
-
-    private UserBoard userBoard;
 
     private String currentListName;
     private String currentListType;
@@ -57,8 +53,6 @@ public class ItemsActivity extends AppCompatActivity {
     private void initLogic() {
         currentListName = getIntent().getStringExtra("ListName");
         currentListType = getIntent().getStringExtra("ListType");
-
-        userBoard = UserBoard.getUserBoard(getApplicationContext());
     }
 
     private void initUI() {
@@ -69,12 +63,7 @@ public class ItemsActivity extends AppCompatActivity {
         rvItems = findViewById(R.id.itemsRecyclerView);
         addNewListItemFab = findViewById(R.id.addNewTaskActionButton);
 
-        Cursor c;
-        if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-            c = dbh.getCheckListItems(currentListName);
-        } else {
-            c = dbh.getNoteListItems(currentListName);
-        }
+        Cursor c = dbh.getCheckListItems(currentListName);
         adapter = new ItemsAdapter(this, c);
         rvItems.setAdapter(adapter);
         rvItems.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -96,45 +85,27 @@ public class ItemsActivity extends AppCompatActivity {
         addNewListItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-                    Intent intent = new Intent(ItemsActivity.this, EditTaskActivity.class);
-                    intent.putExtra("MODE", "create");
-                    intent.putExtra("LIST", currentListName);
-                    startActivityForResult(intent, 1);
-                } else if (currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
-                    Intent intent = new Intent(ItemsActivity.this, EditNoteActivity.class);
-                    intent.putExtra("MODE", "create");
-                    intent.putExtra("LIST", currentListName);
-                    startActivityForResult(intent, 1);
-                }
+                Intent intent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+                intent.putExtra("MODE", "create");
+                intent.putExtra("LIST", currentListName);
+                startActivityForResult(intent, 1);
             }
         });
 
     }
 
     public void deleteSelectedItem(String itemName) {
-        if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-            dbh.removeCheckListItem(itemName);
-            Cursor c = dbh.getCheckListItems(currentListName);
-            adapter.swapCursor(c);
-        } else {
-            dbh.removeNoteListItem(itemName);
-            Cursor c = dbh.getNoteListItems(currentListName);
-            adapter.swapCursor(c);
-        }
+        dbh.removeCheckListItem(itemName);
+        Cursor c = dbh.getCheckListItems(currentListName);
+        adapter.swapCursor(c);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1) {
             if(resultCode == RESULT_OK) {
-                if (currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-                    Cursor c = dbh.getCheckListItems(currentListName);
-                    adapter.swapCursor(c);
-                } else if (currentListType.equalsIgnoreCase(DatabaseHelper.NOTES_LIST_TYPE)) {
-                    Cursor c = dbh.getNoteListItems(currentListName);
-                    adapter.swapCursor(c);
-                }
+                Cursor c = dbh.getCheckListItems(currentListName);
+                adapter.swapCursor(c);
             }
         } else if(requestCode == 2) {
             if(resultCode == RESULT_OK) {
@@ -155,6 +126,7 @@ public class ItemsActivity extends AppCompatActivity {
             public ImageView priorityImageView;
             public ImageView checkImageView;
             public ImageView deleteImageView;
+            public FrameLayout priorityIndicator;
 
 
             @SuppressLint("ResourceType")
@@ -166,6 +138,7 @@ public class ItemsActivity extends AppCompatActivity {
                 checkImageView = itemView.findViewById(R.id.checkImageView);
                 deleteImageView = itemView.findViewById(R.id.deleteImageView);
                 priorityImageView =itemView.findViewById(R.id.priorityImageView);
+                priorityIndicator = itemView.findViewById(R.id.priorityIndicator);
 
                 checkImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -226,19 +199,12 @@ public class ItemsActivity extends AppCompatActivity {
 
             @Override
             public boolean onLongClick(View view) {
-                if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-                    Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
-                    editTaskIntent.putExtra("MODE", "edit");
-                    editTaskIntent.putExtra("LIST", currentListName);
-                    editTaskIntent.putExtra("OLD", itemNameTextView.getText().toString());
-                    startActivityForResult(editTaskIntent, 1);
-                } else {
-                    Intent editNoteIntent = new Intent(ItemsActivity.this, EditNoteActivity.class);
-                    editNoteIntent.putExtra("MODE", "edit");
-                    editNoteIntent.putExtra("LIST", currentListName);
-                    editNoteIntent.putExtra("OLD", itemNameTextView.getText().toString());
-                    startActivityForResult(editNoteIntent, 1);
-                }
+                Intent editTaskIntent = new Intent(ItemsActivity.this, EditTaskActivity.class);
+                editTaskIntent.putExtra("MODE", "edit");
+                editTaskIntent.putExtra("LIST", currentListName);
+                editTaskIntent.putExtra("OLD", itemNameTextView.getText().toString());
+                startActivityForResult(editTaskIntent, 1);
+
                 return true;
             }
         }
@@ -264,11 +230,7 @@ public class ItemsActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ItemsAdapter.ViewHolder holder, int position) {
             if(cursor.moveToPosition(position)) {
-                if(currentListType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
-                    createNewTask(holder);
-                } else {
-                    createNewNote(holder);
-                }
+                createNewTask(holder);
             }
         }
 
@@ -297,12 +259,15 @@ public class ItemsActivity extends AppCompatActivity {
             switch(priority) {
                 case 3:
                     holder.priorityImageView.setImageResource(R.drawable.high_priority);
+                    holder.priorityIndicator.setBackgroundColor(Color.parseColor("#eb4034"));
                     break;
                 case 2:
                     holder.priorityImageView.setImageResource(R.drawable.medium_priority);
+                    holder.priorityIndicator.setBackgroundColor(Color.parseColor("#ff9900"));
                     break;
                 case 1:
                     holder.priorityImageView.setImageResource(R.drawable.low_priority);
+                    holder.priorityIndicator.setBackgroundColor(Color.parseColor("#37eb34"));
                     break;
             }
 
@@ -318,19 +283,6 @@ public class ItemsActivity extends AppCompatActivity {
                         (~Paint.STRIKE_THRU_TEXT_FLAG));
                 holder.itemView.setEnabled(true);
             }
-        }
-
-        public void createNewNote(ItemsAdapter.ViewHolder holder) {
-            holder.itemDueDateTextView.setVisibility(View.INVISIBLE);
-            holder.priorityImageView.setVisibility(View.INVISIBLE);
-            holder.checkImageView.setVisibility(View.INVISIBLE);
-
-            holder.itemDueDateTextView.setEnabled(false);
-            holder.priorityImageView.setEnabled(false);
-            holder.checkImageView.setEnabled(false);
-
-            holder.itemNameTextView.setText(cursor.getString(cursor.getColumnIndex("NoteTitle")));
-            holder.deleteImageView.setImageResource(R.drawable.delete_button);
         }
     }
 }

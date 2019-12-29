@@ -3,6 +3,7 @@ package com.example.taskschedulerproject;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -53,6 +54,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MAIN_BOARD_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TASKS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + NOTES_TABLE);
         onCreate(db);
     }
 
@@ -98,8 +101,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("List",listName);
-        contentValues.put("NoteTitle",title);
+        contentValues.put("List", listName);
+        contentValues.put("NoteTitle", title);
         contentValues.put("NoteDescription", description);
         contentValues.put("NoteDate", creationDate);
 
@@ -110,12 +113,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean updateCheckList(String oldTitle, String title, String date) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String escapeOldTitle = DatabaseUtils.sqlEscapeString(oldTitle);
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("ListName", title);
         contentValues.put("CreationDate", date);
         contentValues.put("ListType", CHECK_LIST_TYPE);
 
-        db.update(MAIN_BOARD_NAME, contentValues, "ListName ='" + oldTitle + "'", null);
+        db.update(MAIN_BOARD_NAME, contentValues, "ListName =" + escapeOldTitle + "", null);
 
         return true;
     }
@@ -123,12 +128,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean updateNoteList(String oldTitle, String title, String date) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String escapeOldTitle = DatabaseUtils.sqlEscapeString(oldTitle);
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("ListName", title);
         contentValues.put("CreationDate", date);
         contentValues.put("ListType", NOTES_LIST_TYPE);
 
-        db.update(MAIN_BOARD_NAME, contentValues, "ListName='" + oldTitle + "'", null);
+        db.update(MAIN_BOARD_NAME, contentValues, "ListName=" + escapeOldTitle + "", null);
 
         return true;
     }
@@ -137,23 +144,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                        String creationDate,int priority,String taskDuration,String taskDeadline, int taskChecked) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String escapeTaskTitle = DatabaseUtils.sqlEscapeString(taskTitle);
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put("List",listName);
-        contentValues.put("TaskTitle",title);
-        contentValues.put("TaskDescription",desc);
+        contentValues.put("List", listName);
+        contentValues.put("TaskTitle", title);
+        contentValues.put("TaskDescription", desc);
         contentValues.put("TaskDate",creationDate);
         contentValues.put("TaskPriority",priority);
         contentValues.put("TaskDuration",taskDuration);
         contentValues.put("TaskDeadline",taskDeadline);
         contentValues.put("TaskChecked", taskChecked);
 
-        db.update(TASKS_TABLE, contentValues, "TaskTitle='" + taskTitle + "'", null);
+        db.update(TASKS_TABLE, contentValues, "TaskTitle=" + escapeTaskTitle + "", null);
 
         return true;
     }
 
+    /* Not updated yet */
     public boolean updateNoteListItem(String noteTitle, String listName, String title, String description, String creationDate) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        String escapeNoteTitle = DatabaseUtils.sqlEscapeString(noteTitle);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("List",listName);
@@ -161,7 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("NoteDescription", description);
         contentValues.put("NoteDate", creationDate);
 
-        db.update(NOTES_TABLE, contentValues, "NoteTitle=" + noteTitle, null);
+        db.update(NOTES_TABLE, contentValues, "NoteTitle=" + escapeNoteTitle + "", null);
         return true;
     }
 
@@ -174,34 +186,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getCheckListItems(String listName) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE List='" + listName + "'", null);
+
+        String escapeListName = DatabaseUtils.sqlEscapeString(listName);
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE List=" + escapeListName + "", null);
 
         return res;
     }
 
     public Cursor getNoteListItems(String listName) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE List='" + listName + "'", null);
+
+        String escapeListName = DatabaseUtils.sqlEscapeString(listName);
+
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE List=" + escapeListName + "", null);
 
         return res;
     }
 
     public Cursor getList(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "SELECT * FROM " + MAIN_BOARD_NAME + " WHERE ListName='"+name+"'", null );
+
+        String escapeName = DatabaseUtils.sqlEscapeString(name);
+
+        Cursor res =  db.rawQuery( "SELECT * FROM " + MAIN_BOARD_NAME + " WHERE ListName=" + escapeName + "", null );
         return res;
     }
 
     public Cursor getTaskItem(String taskTitle) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE TaskTitle='" + taskTitle + "'", null);
+
+        String escapeTaskTitle = DatabaseUtils.sqlEscapeString(taskTitle);
+
+        Cursor res = db.rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE TaskTitle=" + escapeTaskTitle + "", null);
 
         return res;
     }
 
     public Cursor getNoteItem(String noteTitle) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE NoteTitle='" + noteTitle + "'", null);
+
+        String escapeNoteTitle = DatabaseUtils.sqlEscapeString(noteTitle);
+
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE NoteTitle=" + escapeNoteTitle + "", null);
 
         return res;
     }
@@ -224,21 +251,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void removeList(String itemName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(MAIN_BOARD_NAME, "ListName='" + itemName + "'", null);
+        String escapeItemName = DatabaseUtils.sqlEscapeString(itemName);
 
-        db.delete(TASKS_TABLE, "List='" + itemName + "'", null);
-        db.delete(NOTES_TABLE, "List='" + itemName + "'", null);
+        db.delete(MAIN_BOARD_NAME, "ListName=" + escapeItemName + "", null);
+
+        db.delete(TASKS_TABLE, "List=" + escapeItemName + "", null);
+        db.delete(NOTES_TABLE, "List=" + escapeItemName + "", null);
     }
 
     public void removeCheckListItem(String itemName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(TASKS_TABLE, "TaskTitle='" + itemName + "'", null);
+        String escapeItemName = DatabaseUtils.sqlEscapeString(itemName);
+
+        db.delete(TASKS_TABLE, "TaskTitle=" + escapeItemName + "", null);
     }
 
     public void removeNoteListItem(String itemName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(NOTES_TABLE, "NoteTitle='" + itemName + "'", null);
+        String escapeItemName = DatabaseUtils.sqlEscapeString(itemName);
+
+        db.delete(NOTES_TABLE, "NoteTitle=" + escapeItemName + "", null);
     }
 }

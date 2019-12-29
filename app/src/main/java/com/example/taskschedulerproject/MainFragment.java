@@ -3,6 +3,7 @@ package com.example.taskschedulerproject;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -204,13 +205,20 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                Intent selectedListIntent = new Intent(getContext(), ItemsActivity.class);
                 cursor.moveToPosition(getAdapterPosition());
                 String listName = cursor.getString(cursor.getColumnIndex("ListName"));
                 String listType = cursor.getString(cursor.getColumnIndex("ListType"));
-                selectedListIntent.putExtra("ListName", listName);
-                selectedListIntent.putExtra("ListType", listType);
-                startActivity(selectedListIntent);
+                if(listType.equalsIgnoreCase(DatabaseHelper.CHECK_LIST_TYPE)) {
+                    Intent selectedListIntent = new Intent(getContext(), ItemsActivity.class);
+                    selectedListIntent.putExtra("ListName", listName);
+                    selectedListIntent.putExtra("ListType", listType);
+                    startActivity(selectedListIntent);
+                } else {
+                    Intent selectedListIntent = new Intent(getContext(), ItemNoteActivity.class);
+                    selectedListIntent.putExtra("ListName", listName);
+                    selectedListIntent.putExtra("ListType", listType);
+                    startActivity(selectedListIntent);
+                }
             }
 
             @Override
